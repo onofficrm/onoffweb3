@@ -24,7 +24,7 @@ jobs:
           protocol: ftp
           local-dir: ./
           server-dir: /public_html/
-          state-name: onoffweb1-deploy-v1
+          state-name: onoffweb3-deploy-v1
           log-level: minimal
           exclude: |
             **/.git*
