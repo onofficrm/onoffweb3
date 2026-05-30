@@ -1,0 +1,8 @@
+@charset "utf-8";
+
+/* basic-clean — 기준 스킨 (공통은 /css/g5b-board.css) */
+@import url("../../../css/g5b-board.css");
+
+.board-wrap--basic-clean {
+  max-width: 100%;
+}

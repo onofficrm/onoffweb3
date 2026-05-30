@@ -1,0 +1,271 @@
+@charset "utf-8";
+
+@import url("../basic-clean/style.css");
+
+/* Fallback: /img/common/no-youtube.svg (PHP: G5B_FALLBACK_NO_YOUTUBE_URL) */
+
+/* YouTube 썸네일 공통 */
+.board-yt-thumb {
+  display: block;
+  width: 100%;
+  height: 100%;
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  background: var(--board-media-bg);
+}
+
+.board-yt-thumb__img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.board-yt-thumb__img--placeholder {
+  object-fit: contain;
+  padding: 1rem;
+  opacity: 0.9;
+}
+
+.board-yt-thumb--empty {
+  min-height: 100%;
+  background: linear-gradient(145deg, var(--board-media-bg), var(--board-media-gradient-end));
+}
+
+.board-yt-thumb--empty::before {
+  content: "";
+  display: block;
+  width: 100%;
+  height: 100%;
+  min-height: 48px;
+  background: url("../../../img/common/no-youtube.svg") center / 60% auto no-repeat;
+  opacity: 0.9;
+}
+
+.board-yt-thumb--fallback .board-yt-thumb__img--placeholder,
+.board-thumb--fallback .board-thumb__img--placeholder {
+  object-fit: contain;
+  padding: 0.75rem;
+  background: transparent;
+}
+
+.board-yt-thumb--secret {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-muted);
+  font-size: 1.5rem;
+}
+
+.board-yt-play {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+  color: var(--board-on-media);
+  font-size: 2rem;
+  text-shadow: 0 2px 12px color-mix(in srgb, var(--color-text) 50%, transparent);
+  opacity: 0.9;
+}
+
+/* youtube-list 목록 */
+.board-list--youtube-list .board-list__items {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  border-top: 2px solid var(--color-text, #1e293b);
+}
+
+.board-list--youtube-list .board-list__item {
+  position: relative;
+  border-bottom: 1px solid var(--color-line, #e2e8f0);
+}
+
+.board-list--youtube-list .board-list__item--notice {
+  background: color-mix(in srgb, var(--color-primary, #2563eb) 5%, var(--color-bg, #fff));
+}
+
+.board-list--youtube-list .board-list__item-chk {
+  position: absolute;
+  top: var(--space-md, 1rem);
+  left: var(--space-md, 1rem);
+  z-index: 3;
+}
+
+.board-list--youtube-list .board-list__item-link {
+  display: flex;
+  gap: var(--space-lg, 1.5rem);
+  padding: var(--space-lg, 1.5rem);
+  text-decoration: none;
+  color: inherit;
+  transition: background var(--transition-fast, 150ms ease);
+}
+
+.board-list--youtube-list .board-list__item-link:hover {
+  background: var(--color-surface, #f8fafc);
+}
+
+.board-list--youtube-list .board-list__thumb-wrap {
+  position: relative;
+  flex-shrink: 0;
+  width: 200px;
+  aspect-ratio: 16 / 9;
+}
+
+.board-list--youtube-list .board-yt-thumb-wrap {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.board-list--youtube-list .board-list__body {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.board-list--youtube-list .board-title--yt .board-title__text {
+  font-size: var(--font-size-lg, 1.125rem);
+  font-weight: var(--font-weight-semibold, 600);
+  color: var(--color-text, #1e293b);
+}
+
+.board-list--youtube-list .board-list__item-link:hover .board-title__text {
+  color: var(--color-primary, #2563eb);
+}
+
+.board-list--youtube-list .board-list__excerpt {
+  font-size: var(--font-size-sm, 0.875rem);
+  color: var(--color-muted, #64748b);
+  line-height: var(--line-height-relaxed, 1.75);
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.board-list--youtube-list .board-list__foot {
+  display: flex;
+  gap: var(--space-md, 1rem);
+  font-size: var(--font-size-sm, 0.875rem);
+  color: var(--color-muted, #64748b);
+  margin-top: auto;
+}
+
+/* 글쓰기 */
+.board-write-form__youtube .board-write-form__yt-guide {
+  margin-top: var(--space-sm, 0.5rem);
+  padding: var(--space-md, 1rem);
+  background: var(--color-surface, #f8fafc);
+  border-radius: var(--radius-md, 8px);
+  font-size: var(--font-size-sm, 0.875rem);
+  color: var(--color-muted, #64748b);
+  line-height: 1.7;
+}
+
+.board-write-form__yt-guide .board-write-form__yt-warn {
+  display: block;
+  margin-top: 0.5rem;
+  color: var(--color-text, #1e293b);
+}
+
+.board-write-form__yt-summary {
+  min-height: 4.5rem;
+  resize: vertical;
+}
+
+.board-write-form__optional {
+  font-weight: normal;
+  color: var(--color-muted, #64748b);
+  font-size: var(--font-size-sm, 0.875rem);
+}
+
+/* 글보기 embed */
+.board-view--youtube .board-view__player {
+  margin-bottom: var(--space-xl, 2rem);
+}
+
+.board-yt-embed__ratio {
+  position: relative;
+  width: 100%;
+  padding-bottom: 56.25%;
+  background: var(--board-media-bg);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+}
+
+.board-yt-embed__ratio iframe,
+.youtube-embed iframe {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border: 0;
+}
+
+.board-view--youtube .video-meta,
+.board-view--youtube .video-summary {
+  margin-top: var(--space-sm, 0.5rem);
+}
+
+.board-list--youtube-list .youtube-thumb,
+.board-list--youtube-gallery .youtube-thumb {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.board-yt-fallback {
+  padding: var(--space-3xl, 4rem) var(--space-xl, 2rem);
+  text-align: center;
+  background: var(--color-surface, #f8fafc);
+  border: 1px dashed var(--color-line, #e2e8f0);
+  border-radius: var(--radius-lg, 12px);
+}
+
+.board-yt-fallback__icon {
+  width: 80px;
+  height: auto;
+  margin-bottom: var(--space-md, 1rem);
+  opacity: 0.85;
+}
+
+.board-yt-fallback__text {
+  margin: 0 0 var(--space-sm, 0.5rem);
+  font-weight: var(--font-weight-semibold, 600);
+  color: var(--color-text, #1e293b);
+}
+
+.board-yt-fallback__hint {
+  margin: 0;
+  font-size: var(--font-size-sm, 0.875rem);
+  color: var(--color-muted, #64748b);
+}
+
+.board-view--youtube .board-view__summary {
+  margin: var(--space-sm, 0.5rem) 0 0;
+  font-size: var(--font-size-base, 1rem);
+  color: var(--color-muted, #64748b);
+}
+
+.board-view--youtube .board-view__content-wrap {
+  max-width: 48rem;
+  margin: 0 auto;
+  padding-top: var(--space-xl, 2rem);
+}
+
+@media (max-width: 767px) {
+  .board-list--youtube-list .board-list__item-link {
+    flex-direction: column;
+    padding: var(--space-md, 1rem);
+  }
+
+  .board-list--youtube-list .board-list__thumb-wrap {
+    width: 100%;
+  }
+}

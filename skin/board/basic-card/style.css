@@ -1,0 +1,157 @@
+@charset "utf-8";
+
+.board-list__h1 { margin: 0 0 0.35rem; font-size: var(--font-size-xl, 1.25rem); font-weight: var(--font-weight-bold, 700); }
+.board-article-title { margin: 0; font-size: var(--font-size-2xl, 1.5rem); }
+.related-posts-wrap.board-seo-related { margin: 1.5rem 0; }
+
+/* basic-card — basic-clean 공통 + 카드형 목록 */
+@import url("../basic-clean/style.css");
+
+/* 카드 그리드 */
+.board-list--cards .board-list__grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--card-gap, var(--space-lg, 1.5rem));
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.board-list__card {
+  position: relative;
+  margin: 0;
+}
+
+.board-list__card-inner {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  padding: var(--card-padding, var(--space-xl, 2rem));
+  border: 1px solid var(--color-line, #e2e8f0);
+  border-radius: var(--card-radius, var(--radius-lg, 12px));
+  background: var(--color-bg, #fff);
+  box-shadow: var(--shadow-soft);
+  transition: border-color var(--transition-fast, 150ms ease),
+    box-shadow var(--transition-base, 250ms ease),
+    transform var(--transition-fast, 150ms ease);
+}
+
+.board-list__card:hover .board-list__card-inner {
+  border-color: color-mix(in srgb, var(--color-primary, #2563eb) 40%, var(--color-line, #e2e8f0));
+  box-shadow: var(--shadow-elevated);
+  transform: translateY(-2px);
+}
+
+.board-list__card-excerpt a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.board-list__card-excerpt a:hover {
+  color: var(--color-primary, #2563eb);
+}
+
+.board-list__card--notice .board-list__card-inner {
+  border-color: color-mix(in srgb, var(--color-primary, #2563eb) 35%, var(--color-line, #e2e8f0));
+  background: color-mix(in srgb, var(--color-primary, #2563eb) 4%, var(--color-bg, #fff));
+}
+
+.board-list__card-chk {
+  position: absolute;
+  top: var(--space-md, 1rem);
+  right: var(--space-md, 1rem);
+  z-index: 2;
+}
+
+.board-list__card-meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-sm, 0.5rem);
+  margin-bottom: var(--space-sm, 0.5rem);
+  font-size: var(--font-size-sm, 0.875rem);
+  color: var(--color-muted, #64748b);
+}
+
+.board-list__card-meta .board-list__cate {
+  margin: 0;
+  float: none;
+}
+
+.board-title--card {
+  margin: 0 0 var(--space-sm, 0.5rem);
+  font-size: var(--font-size-lg, 1.125rem);
+  font-weight: var(--font-weight-semibold, 600);
+  line-height: var(--line-height-tight, 1.25);
+  color: var(--color-text, #1e293b);
+}
+
+.board-title--card .board-title__text {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.board-list__card-excerpt {
+  flex: 1;
+  margin: 0 0 var(--space-md, 1rem);
+  font-size: var(--font-size-sm, 0.875rem);
+  line-height: var(--line-height-relaxed, 1.75);
+  color: var(--color-muted, #64748b);
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.board-list__card-excerpt--secret {
+  font-style: italic;
+}
+
+.board-list__card-foot {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-sm, 0.5rem) var(--space-md, 1rem);
+  padding-top: var(--space-md, 1rem);
+  border-top: 1px solid var(--color-line, #e2e8f0);
+  font-size: var(--font-size-sm, 0.875rem);
+  color: var(--color-muted, #64748b);
+}
+
+.board-list__card-author {
+  font-weight: var(--font-weight-medium, 500);
+  color: var(--color-text, #1e293b);
+}
+
+.board-list__card-hit {
+  margin-left: auto;
+}
+
+.board-list--cards .board-list__empty {
+  padding: var(--space-3xl, 4rem);
+  text-align: center;
+  color: var(--color-muted, #64748b);
+}
+
+/* 글보기 — 칼럼형 여백 */
+.board-wrap--basic-card .board-view__content {
+  font-size: var(--font-size-lg, 1.125rem);
+}
+
+/* 반응형 그리드 */
+@media (max-width: 1024px) {
+  .board-list--cards .board-list__grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 767px) {
+  .board-list--cards .board-list__grid {
+    grid-template-columns: 1fr;
+  }
+  .board-list__card-inner {
+    padding: var(--space-lg, 1.5rem);
+  }
+}

@@ -1,0 +1,43 @@
+name: Deploy to Server
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  ftp-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Deploy via FTP
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
+        with:
+          server: ${{ secrets.FTP_SERVER }}
+          username: ${{ secrets.FTP_USERNAME }}
+          password: ${{ secrets.FTP_PASSWORD }}
+          port: ${{ secrets.FTP_PORT }}
+          parallel: 1
+          protocol: ftp
+          local-dir: ./
+          server-dir: /public_html/
+          state-name: onoffweb1-deploy-v1
+          log-level: minimal
+          exclude: |
+            **/.git*
+            **/.github/**
+            **/.DS_Store
+            **/.vscode/**
+            _backup_transfer_*/
+            **/_backup_transfer_*/
+            _BUILDER_INPUT/**
+            data/**
+            cache/**
+            session/**
+            tmp/**
+            *.log
+            .env
+            .env.*

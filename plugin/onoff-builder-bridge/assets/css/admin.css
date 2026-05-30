@@ -1,0 +1,434 @@
+@charset "utf-8";
+
+/* onoff-builder-bridge — 관리자 화면 (최소 스타일) */
+
+.onoff-builder-admin {
+  margin: 0;
+  font-family: 'Malgun Gothic', 'Apple SD Gothic Neo', sans-serif;
+  font-size: 14px;
+  line-height: 1.5;
+  color: #1e293b;
+  background: #f1f5f9;
+}
+
+.onoff-builder-admin__main {
+  min-height: 100vh;
+  padding-bottom: 2rem;
+}
+
+.onoff-builder-admin__inner {
+  max-width: 920px;
+  margin: 0 auto;
+  padding: 0 1.25rem;
+}
+
+/* 헤더 */
+.onoff-builder-admin__header {
+  background: #fff;
+  border-bottom: 1px solid #e2e8f0;
+  margin-bottom: 1.5rem;
+}
+
+.onoff-builder-admin__header .onoff-builder-admin__inner {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding-top: 1rem;
+  padding-bottom: 1rem;
+}
+
+.onoff-builder-admin__brand {
+  margin: 0;
+  font-size: 1.125rem;
+  font-weight: 700;
+}
+
+.onoff-builder-admin__brand a {
+  color: #0f172a;
+  text-decoration: none;
+}
+
+.onoff-builder-admin__brand a:hover {
+  color: #2563eb;
+}
+
+.onoff-builder-admin__brand-sub {
+  display: block;
+  margin-top: 0.15rem;
+  font-size: 0.75rem;
+  font-weight: 400;
+  color: #64748b;
+}
+
+.onoff-builder-admin__topnav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+}
+
+.onoff-builder-admin__topnav a {
+  padding: 0.35rem 0.65rem;
+  border-radius: 6px;
+  font-size: 0.8125rem;
+  color: #475569;
+  text-decoration: none;
+}
+
+.onoff-builder-admin__topnav a:hover {
+  background: #f1f5f9;
+  color: #1e293b;
+}
+
+.onoff-builder-admin__topnav a.is-active {
+  background: #eff6ff;
+  color: #1d4ed8;
+  font-weight: 600;
+}
+
+/* 페이지 제목 */
+.onoff-builder-admin__page-head {
+  margin-bottom: 1.25rem;
+}
+
+.onoff-builder-admin__page-head h1 {
+  margin: 0 0 0.35rem;
+  font-size: 1.5rem;
+  font-weight: 700;
+}
+
+.onoff-builder-admin__lead {
+  margin: 0;
+  color: #64748b;
+  font-size: 0.9375rem;
+}
+
+/* 카드 */
+.onoff-builder-admin__card {
+  background: #fff;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  padding: 1.25rem;
+  margin-bottom: 1rem;
+}
+
+.onoff-builder-admin__card-title {
+  margin: 0 0 0.75rem;
+  font-size: 1rem;
+  font-weight: 700;
+}
+
+/* 안내 박스 */
+.onoff-builder-admin__help,
+.onoff-builder-admin__notice,
+.onoff-builder-admin__alert,
+.onoff-builder-admin__warn {
+  margin-bottom: 1rem;
+  padding: 0.875rem 1rem;
+  border-radius: 8px;
+  font-size: 0.875rem;
+}
+
+.onoff-builder-admin__help {
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  color: #334155;
+}
+
+.onoff-builder-admin__help ul,
+.onoff-builder-admin__help ol {
+  margin: 0.5rem 0 0;
+  padding-left: 1.25rem;
+}
+
+.onoff-builder-admin__help li + li {
+  margin-top: 0.35rem;
+}
+
+.onoff-builder-admin__help p {
+  margin: 0;
+}
+
+.onoff-builder-admin__warn {
+  background: #fffbeb;
+  border: 1px solid #fde68a;
+  color: #92400e;
+}
+
+.onoff-builder-admin__notice {
+  background: #ecfdf5;
+  border: 1px solid #a7f3d0;
+  color: #065f46;
+}
+
+.onoff-builder-admin__alert {
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  color: #991b1b;
+}
+
+/* 사용 흐름 */
+.onoff-builder-admin__steps {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  counter-reset: obb-step;
+}
+
+.onoff-builder-admin__steps li {
+  position: relative;
+  padding: 0.65rem 0 0.65rem 2.5rem;
+  border-bottom: 1px solid #f1f5f9;
+}
+
+.onoff-builder-admin__steps li:last-child {
+  border-bottom: none;
+}
+
+.onoff-builder-admin__steps li::before {
+  counter-increment: obb-step;
+  content: counter(obb-step);
+  position: absolute;
+  left: 0;
+  top: 0.65rem;
+  width: 1.65rem;
+  height: 1.65rem;
+  line-height: 1.65rem;
+  text-align: center;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #2563eb;
+  background: #eff6ff;
+  border-radius: 50%;
+}
+
+/* 버튼 */
+.onoff-builder-admin__nav,
+.onoff-builder-admin__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin: 1rem 0;
+}
+
+.onoff-builder-admin__btn {
+  display: inline-block;
+  padding: 0.5rem 1rem;
+  border: 1px solid #cbd5e1;
+  border-radius: 6px;
+  background: #fff;
+  color: #1e293b;
+  font-size: 0.875rem;
+  text-decoration: none;
+  cursor: pointer;
+  line-height: 1.4;
+}
+
+.onoff-builder-admin__btn:hover {
+  background: #f8fafc;
+  border-color: #94a3b8;
+}
+
+.onoff-builder-admin__btn--primary {
+  background: #2563eb;
+  border-color: #2563eb;
+  color: #fff;
+}
+
+.onoff-builder-admin__btn--primary:hover {
+  background: #1d4ed8;
+  border-color: #1d4ed8;
+  color: #fff;
+}
+
+.onoff-builder-admin__btn--danger {
+  border-color: #fca5a5;
+  color: #b91c1c;
+}
+
+.onoff-builder-admin__btn--danger:hover {
+  background: #fef2f2;
+}
+
+button.onoff-builder-admin__btn {
+  font-family: inherit;
+}
+
+button.onoff-builder-admin__btn:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+/* 툴바 · 테이블 */
+.onoff-builder-admin__toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.onoff-builder-admin__toolbar h1 {
+  margin: 0;
+  font-size: 1.5rem;
+}
+
+.onoff-builder-admin__table-wrap {
+  overflow-x: auto;
+  margin-bottom: 1rem;
+}
+
+.onoff-builder-admin__table {
+  width: 100%;
+  min-width: 640px;
+  border-collapse: collapse;
+  background: #fff;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.onoff-builder-admin__table th,
+.onoff-builder-admin__table td {
+  padding: 0.7rem 0.85rem;
+  border-bottom: 1px solid #e2e8f0;
+  text-align: left;
+  vertical-align: top;
+}
+
+.onoff-builder-admin__table th {
+  background: #f8fafc;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: #475569;
+}
+
+.onoff-builder-admin__table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.onoff-builder-admin__table code {
+  font-size: 0.8125rem;
+  background: #f1f5f9;
+  padding: 0.1rem 0.35rem;
+  border-radius: 4px;
+}
+
+/* 폼 */
+.onoff-builder-admin__form {
+  background: #fff;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  padding: 1.25rem;
+}
+
+.onoff-builder-admin__field {
+  margin-bottom: 1.1rem;
+}
+
+.onoff-builder-admin__field:last-of-type {
+  margin-bottom: 0;
+}
+
+.onoff-builder-admin__field label {
+  display: block;
+  margin-bottom: 0.35rem;
+  font-weight: 600;
+  font-size: 0.875rem;
+}
+
+.onoff-builder-admin__field .req {
+  color: #dc2626;
+}
+
+.onoff-builder-admin__field input[type="text"],
+.onoff-builder-admin__field input[type="file"] {
+  width: 100%;
+  max-width: 100%;
+  padding: 0.55rem 0.65rem;
+  border: 1px solid #cbd5e1;
+  border-radius: 6px;
+  box-sizing: border-box;
+  font-size: 0.875rem;
+}
+
+.onoff-builder-admin__field .hint {
+  margin: 0.35rem 0 0;
+  font-size: 0.8125rem;
+  color: #64748b;
+}
+
+.onoff-builder-admin__form-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 1.25rem;
+  padding-top: 1rem;
+  border-top: 1px solid #f1f5f9;
+}
+
+.onoff-builder-admin__inline-form {
+  display: inline;
+  margin: 0;
+}
+
+/* 목록 URL */
+.onoff-builder-admin__url-cell {
+  font-size: 0.8125rem;
+  max-width: 280px;
+}
+
+.onoff-builder-admin__view-link {
+  display: inline-block;
+  margin-bottom: 0.25rem;
+  font-weight: 600;
+  color: #2563eb;
+  text-decoration: none;
+}
+
+.onoff-builder-admin__view-link:hover {
+  text-decoration: underline;
+}
+
+.onoff-builder-admin__url-copy {
+  display: block;
+  word-break: break-all;
+  font-size: 0.75rem;
+  color: #64748b;
+}
+
+/* 빈 상태 */
+.onoff-builder-admin__empty {
+  text-align: center;
+  padding: 2rem 1rem;
+  background: #fff;
+  border: 1px dashed #cbd5e1;
+  border-radius: 10px;
+  color: #64748b;
+}
+
+.onoff-builder-admin__empty-title {
+  margin: 0 0 0.5rem;
+  font-size: 1rem;
+  font-weight: 600;
+  color: #334155;
+}
+
+.onoff-builder-admin__empty p {
+  margin: 0 0 1rem;
+}
+
+.onoff-builder-admin__hint,
+.onoff-builder-admin__footer-meta {
+  font-size: 0.8125rem;
+  color: #94a3b8;
+  margin-top: 1.5rem;
+}
+
+.onoff-builder-admin__footer-actions {
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid #e2e8f0;
+}

@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  sitemap.sample.xml — 샘플 (운영 시 복사·수정)
+
+  [운영 절차]
+  1. 이 파일을 sitemap.xml 로 복사 (또는 내용을 기존 sitemap.xml에 반영)
+  2. 아래 모든 https://example.com 을 실제 도메인으로 일괄 교체
+  3. 사용하지 않는 게시판·페이지 URL 삭제
+  4. 지역 SEO 페이지(local-*.php)는 실제 공개한 URL만 추가
+  5. noindex 페이지(완료·404·style-guide·템플릿)는 포함하지 않음
+  6. Google Search Console · 네이버 서치어드바이저에 sitemap URL 제출
+
+  자동 생성 기능 없음 — 글·게시판 증가 시 수동 또는 별도 도구로 갱신
+-->
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+
+  <!-- 메인 -->
+  <url>
+    <loc>https://example.com/</loc>
+    <changefreq>weekly</changefreq>
+    <priority>1.0</priority>
+  </url>
+
+  <!-- 커스텀 서브페이지 (/page/) -->
+  <url>
+    <loc>https://example.com/page/about.php</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://example.com/page/service.php</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://example.com/page/portfolio.php</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://example.com/page/contact.php</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://example.com/page/privacy.php</loc>
+    <changefreq>yearly</changefreq>
+    <priority>0.3</priority>
+  </url>
+
+  <!--
+    지역 SEO 페이지 — 실제 납품·공개한 파일만 추가 (템플릿 미포함)
+    예:
+    <url>
+      <loc>https://example.com/page/local-gangnam-skin.php</loc>
+      <changefreq>monthly</changefreq>
+      <priority>0.7</priority>
+    </url>
+  -->
+
+  <!-- 게시판 목록 (bo_table은 관리자 설정과 동일하게) -->
+  <url>
+    <loc>https://example.com/bbs/board.php?bo_table=notice</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://example.com/bbs/board.php?bo_table=news</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://example.com/bbs/board.php?bo_table=gallery</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://example.com/bbs/board.php?bo_table=story</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+
+  <!--
+    개별 글 URL — 중요 글만 수동 추가하거나, 추후 sitemap 생성 스크립트로 확장
+    예:
+    <url>
+      <loc>https://example.com/bbs/board.php?bo_table=news&amp;wr_id=1</loc>
+      <changefreq>monthly</changefreq>
+      <priority>0.5</priority>
+    </url>
+  -->
+
+</urlset>

@@ -1,0 +1,127 @@
+@charset "utf-8";
+
+.board-list__h1 { margin: 0 0 0.35rem; font-size: var(--font-size-xl, 1.25rem); font-weight: var(--font-weight-bold, 700); }
+.board-title__heading { margin: 0; font-size: inherit; font-weight: inherit; }
+.board-article-title { margin: 0; font-size: var(--font-size-2xl, 1.5rem); }
+
+/* basic-modern — basic-clean 공통 + 기업형 소식 레이아웃 */
+@import url("../basic-clean/style.css");
+
+/* 넓은 여백 */
+.board-wrap--basic-modern {
+  padding: var(--space-md, 1rem) 0 var(--space-2xl, 3rem);
+}
+
+.board-wrap--basic-modern .board-header--modern {
+  margin-bottom: var(--space-2xl, 3rem);
+  padding-bottom: var(--space-lg, 1.5rem);
+}
+
+.board-wrap--basic-modern .board-cate--modern {
+  margin-bottom: var(--space-xl, 2rem);
+}
+
+.board-wrap--basic-modern .board-cate--modern a {
+  padding: 0.5rem 1.25rem;
+  font-size: var(--font-size-base, 1rem);
+}
+
+/* 목록: 날짜·분류 강조 */
+.board-list--modern table {
+  border-top-width: 1px;
+}
+
+.board-list--modern thead th {
+  padding: 1rem 1.25rem;
+  font-size: var(--font-size-sm, 0.875rem);
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+}
+
+.board-list--modern tbody td {
+  padding: 1.35rem 1.25rem;
+  vertical-align: middle;
+}
+
+.board-list--modern .board-list__cell-date {
+  width: 7.5rem;
+  text-align: left;
+}
+
+.board-list--modern .board-list__date {
+  display: block;
+  font-size: var(--font-size-sm, 0.875rem);
+  font-weight: var(--font-weight-semibold, 600);
+  color: var(--color-text, #1e293b);
+  white-space: nowrap;
+}
+
+.board-list--modern .board-list__cell-cate {
+  width: 6.5rem;
+  text-align: center;
+}
+
+.board-list--modern .board-list__cate {
+  display: inline-block;
+  margin: 0;
+  float: none;
+  font-size: var(--font-size-sm, 0.875rem);
+  font-weight: var(--font-weight-semibold, 600);
+}
+
+.board-list--modern .board-list__cate-empty {
+  color: var(--color-muted, #64748b);
+}
+
+.board-list--modern .board-title--modern .board-title__link {
+  font-size: var(--font-size-lg, 1.125rem);
+  font-weight: var(--font-weight-semibold, 600);
+  line-height: var(--line-height-tight, 1.25);
+}
+
+.board-list--modern .board-list__row:hover {
+  background: color-mix(in srgb, var(--color-primary, #2563eb) 4%, var(--color-bg, #fff));
+}
+
+.board-list--modern .board-list__cell-hit,
+.board-list--modern .board-list__cell-good,
+.board-list--modern .board-list__cell-nogood {
+  color: var(--color-muted, #64748b);
+  font-size: var(--font-size-sm, 0.875rem);
+}
+
+/* 글보기 */
+.board-wrap--basic-modern .board-view__head {
+  padding: var(--space-xl, 2rem) 0;
+  margin-bottom: var(--space-xl, 2rem);
+}
+
+.board-wrap--basic-modern .board-view__cate {
+  display: inline-block;
+  margin-bottom: var(--space-md, 1rem);
+  padding: 0.35rem 0.85rem;
+  font-size: var(--font-size-sm, 0.875rem);
+  font-weight: var(--font-weight-semibold, 600);
+}
+
+.board-wrap--basic-modern .board-title__text {
+  font-size: var(--font-size-3xl, 2rem);
+}
+
+.board-wrap--basic-modern .board-view__meta {
+  padding: var(--space-lg, 1.5rem);
+  background: var(--color-surface, #f8fafc);
+  border-radius: var(--radius-lg, 12px);
+}
+
+/* 모바일 */
+@media (max-width: 767px) {
+  .board-list--modern .board-list__cell-date::before { content: "날짜"; }
+  .board-list--modern .board-list__cell-cate::before { content: "분류"; }
+  .board-list--modern .board-title--modern .board-title__link {
+    font-size: var(--font-size-base, 1rem);
+  }
+  .board-wrap--basic-modern .board-title__text {
+    font-size: var(--font-size-xl, 1.25rem);
+  }
+}

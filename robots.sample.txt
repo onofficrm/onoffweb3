@@ -1,0 +1,36 @@
+# robots.sample.txt — 샘플 (운영 시 복사·수정)
+#
+# [운영 절차]
+# 1. 이 파일을 robots.txt 로 복사 (웹 루트 = 그누보드 index.php 와 같은 위치)
+# 2. Sitemap: 줄의 https://example.com 을 실제 도메인으로 교체
+# 3. 사이트에 없는 경로는 Disallow 에서 제거
+# 4. 서버에 이미 robots.txt 가 있으면 내용을 비교·병합 후 적용 (덮어쓰기 전 백업)
+#
+# 참고: [SITEMAP-ROBOTS-GUIDE.md](SITEMAP-ROBOTS-GUIDE.md)
+
+User-agent: *
+Allow: /
+
+# 그누보드 관리자·시스템 (크롤링 불필요)
+Disallow: /adm/
+Disallow: /bbs/login.php
+Disallow: /bbs/register.php
+Disallow: /bbs/password.php
+
+# 데이터·캐시·설정 (보안)
+Disallow: /data/
+
+# 빌더·개발용 (운영 서버 업로드 제외 권장)
+Disallow: /_BUILDER_INPUT/
+Disallow: /page/style-guide.php
+
+# 문의 완료·404·템플릿 (색인 가치 낮음 — sitemap에도 넣지 않음)
+Disallow: /page/inquiry-thanks.php
+Disallow: /page/404.php
+Disallow: /page/local-template.php
+
+# 설치·테스트 경로 (해당 시)
+# Disallow: /install/
+
+# 실제 sitemap 위치 (도메인 교체 필수)
+Sitemap: https://example.com/sitemap.xml

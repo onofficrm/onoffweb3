@@ -1,0 +1,180 @@
+@charset "utf-8";
+
+/* SEO markup (minimal) */
+.board-list__h1,
+.board-header__title.board-list__h1 {
+  margin: 0 0 0.35rem;
+  font-size: var(--font-size-xl, 1.25rem);
+  font-weight: var(--font-weight-bold, 700);
+  line-height: var(--line-height-tight, 1.25);
+}
+
+.board-article-title {
+  margin: 0;
+  font-size: var(--font-size-2xl, 1.5rem);
+  line-height: var(--line-height-tight, 1.25);
+}
+
+.board-meta__time,
+.board-list__date.post-date {
+  font-size: inherit;
+}
+
+.related-posts-wrap.board-seo-related {
+  margin: 1.5rem 0;
+}
+
+.board-view__body.board-article .board-view__content {
+  margin-top: 0.5rem;
+}
+
+@import url("../basic-clean/style.css");
+
+/* Fallback: /img/common/no-image.svg (PHP: G5B_FALLBACK_NO_IMAGE_URL) */
+
+/* 썸네일 공통 */
+.board-thumb {
+  display: block;
+  flex-shrink: 0;
+  width: 96px;
+  height: 72px;
+  border-radius: var(--radius-md, 8px);
+  overflow: hidden;
+  background: var(--color-surface, #f8fafc);
+}
+
+.board-thumb__img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.board-thumb__img--placeholder {
+  object-fit: contain;
+  padding: 0.5rem;
+  opacity: 0.85;
+}
+
+.board-thumb--empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, var(--color-surface, #f8fafc) 0%, var(--color-line, #e2e8f0) 100%);
+}
+
+/* SVG 미존재 시 CSS 백업 (일반적으로 .board-thumb--fallback img 사용) */
+.board-thumb--empty::before {
+  content: "";
+  display: block;
+  width: 100%;
+  height: 100%;
+  min-height: 48px;
+  background: url("../../../img/common/no-image.svg") center / 60% auto no-repeat;
+  opacity: 0.85;
+}
+
+.board-thumb--secret {
+  color: var(--color-muted, #64748b);
+  font-size: 1.25rem;
+}
+
+/* post-thumb 목록 */
+.board-list--thumb .board-list__items {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  border-top: 2px solid var(--color-text, #1e293b);
+}
+
+.board-list--thumb .board-list__item {
+  position: relative;
+  border-bottom: 1px solid var(--color-line, #e2e8f0);
+}
+
+.board-list--thumb .board-list__item--notice {
+  background: color-mix(in srgb, var(--color-primary, #2563eb) 5%, var(--color-bg, #fff));
+}
+
+.board-list--thumb .board-list__item-chk {
+  position: absolute;
+  top: var(--space-md, 1rem);
+  left: var(--space-md, 1rem);
+  z-index: 2;
+}
+
+.board-list--thumb .board-list__item-link {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-lg, 1.5rem);
+  padding: var(--space-lg, 1.5rem);
+  text-decoration: none;
+  color: inherit;
+  transition: background var(--transition-fast, 150ms ease);
+}
+
+.board-list--thumb .board-list__item-link:hover {
+  background: var(--color-surface, #f8fafc);
+}
+
+.board-list--thumb .board-list__body {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.board-list--thumb .board-list__meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-sm, 0.5rem);
+  font-size: var(--font-size-sm, 0.875rem);
+  color: var(--color-muted, #64748b);
+}
+
+.board-list--thumb .board-list__cate {
+  margin: 0;
+  float: none;
+}
+
+.board-title--thumb .board-title__text {
+  font-size: var(--font-size-lg, 1.125rem);
+  font-weight: var(--font-weight-semibold, 600);
+  color: var(--color-text, #1e293b);
+}
+
+.board-list--thumb .board-list__item-link:hover .board-title__text {
+  color: var(--color-primary, #2563eb);
+}
+
+.board-list--thumb .board-list__excerpt {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.board-list--thumb .board-list__author {
+  font-weight: var(--font-weight-medium, 500);
+}
+
+@media (max-width: 767px) {
+  .board-list--thumb .board-list__item-link {
+    flex-direction: column;
+    padding: var(--space-md, 1rem);
+    gap: var(--space-md, 1rem);
+  }
+
+  .board-thumb {
+    width: 100%;
+    height: auto;
+    aspect-ratio: 16 / 9;
+    max-height: 180px;
+  }
+
+  .board-title--thumb .board-title__text {
+    font-size: var(--font-size-base, 1rem);
+  }
+}

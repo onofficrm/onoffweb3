@@ -1,0 +1,55 @@
+@charset "utf-8";
+
+@import url(../../../css/g5b-board.css);
+
+.board-wrap--map-location .map-location-cards {
+  display: grid;
+  gap: 1rem;
+  margin: 1rem 0;
+}
+
+@media (min-width: 769px) {
+  .board-wrap--map-location .map-location-cards {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+.board-wrap--map-location .map-location-card {
+  padding: 1rem;
+  border: 1px solid var(--board-line, #e2e8f0);
+  border-radius: 8px;
+  background: var(--board-bg, #fff);
+}
+
+.board-wrap--map-location .map-location-card__title {
+  margin: 0 0 0.35rem;
+  font-size: 1.05rem;
+}
+
+.board-wrap--map-location .map-location-card__meta {
+  margin: 0;
+  font-size: 0.875rem;
+  color: var(--board-muted, #64748b);
+}
+
+.board-wrap--map-location .map-location-card__actions {
+  margin-top: 0.75rem;
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.board-wrap--map-location .map-location-fields {
+  display: grid;
+  gap: 1rem;
+}
+
+@media (min-width: 600px) {
+  .board-wrap--map-location .map-location-fields--coords {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.board-wrap--map-location .map-location-view__map .google-map {
+  height: 360px;
+}

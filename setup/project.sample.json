@@ -1,0 +1,208 @@
+{
+  "project_name": "샘플 프로젝트",
+  "site_name": "샘플 사이트",
+  "domain": "https://example.com",
+  "client_name": "샘플 고객사",
+  "agency_name": "온오프마케팅",
+  "delivery_date": "YYYY-MM-DD",
+  "notes": "게시판·메뉴 계획표. 실제 DB에 자동 반영하지 않습니다. 관리자에서 수동 생성을 권장합니다.",
+  "boards": [
+    {
+      "bo_table": "notice",
+      "title": "공지사항",
+      "skin": "basic-notice",
+      "read_level": 1,
+      "write_level": 10,
+      "use_category": false,
+      "use_secret": false,
+      "use_comment": false,
+      "description": "공지와 안내를 등록하는 게시판"
+    },
+    {
+      "bo_table": "news",
+      "title": "뉴스",
+      "skin": "basic-modern",
+      "read_level": 1,
+      "write_level": 10,
+      "use_category": true,
+      "use_secret": false,
+      "use_comment": false,
+      "description": "회사·기관 소식, 보도자료"
+    },
+    {
+      "bo_table": "column",
+      "title": "칼럼",
+      "skin": "post-thumb",
+      "read_level": 1,
+      "write_level": 10,
+      "use_category": true,
+      "use_secret": false,
+      "use_comment": false,
+      "description": "SEO 콘텐츠, 정보글, 블로그형"
+    },
+    {
+      "bo_table": "blog",
+      "title": "블로그",
+      "skin": "post-media",
+      "read_level": 1,
+      "write_level": 10,
+      "use_category": true,
+      "use_secret": false,
+      "use_comment": true,
+      "description": "매거진형 콘텐츠, 브랜드 스토리"
+    },
+    {
+      "bo_table": "portfolio",
+      "title": "포트폴리오",
+      "skin": "gallery-grid",
+      "read_level": 1,
+      "write_level": 10,
+      "use_category": true,
+      "use_secret": false,
+      "use_comment": false,
+      "description": "제작·시공 사례, 프로젝트"
+    },
+    {
+      "bo_table": "gallery",
+      "title": "갤러리",
+      "skin": "gallery-masonry",
+      "read_level": 1,
+      "write_level": 10,
+      "use_category": true,
+      "use_secret": false,
+      "use_comment": false,
+      "description": "이미지 갤러리, 시설·현장 사진"
+    },
+    {
+      "bo_table": "video",
+      "title": "영상",
+      "skin": "youtube-gallery",
+      "read_level": 1,
+      "write_level": 10,
+      "use_category": true,
+      "use_secret": false,
+      "use_comment": false,
+      "description": "유튜브 영상 허브(카드형)"
+    },
+    {
+      "bo_table": "lecture",
+      "title": "강의영상",
+      "skin": "youtube-list",
+      "read_level": 1,
+      "write_level": 10,
+      "use_category": true,
+      "use_secret": false,
+      "use_comment": false,
+      "description": "강의, 인터뷰, 설명 영상(목록형)"
+    },
+    {
+      "bo_table": "review",
+      "title": "후기",
+      "skin": "basic-card",
+      "read_level": 1,
+      "write_level": 2,
+      "use_category": false,
+      "use_secret": false,
+      "use_comment": false,
+      "description": "고객·수강·이용 후기"
+    },
+    {
+      "bo_table": "faq",
+      "title": "자주 묻는 질문",
+      "skin": "faq-accordion",
+      "read_level": 1,
+      "write_level": 10,
+      "use_category": true,
+      "use_secret": false,
+      "use_comment": false,
+      "list_content": true,
+      "description": "FAQ 아코디언, 비용·절차 안내"
+    },
+    {
+      "bo_table": "inquiry",
+      "title": "상담문의",
+      "skin": "landing-inquiry",
+      "read_level": 10,
+      "write_level": 1,
+      "use_category": false,
+      "use_secret": true,
+      "use_comment": false,
+      "description": "문의폼 접수·상담 관리(관리자 열람 권장)"
+    },
+    {
+      "bo_table": "free",
+      "title": "자유게시판",
+      "skin": "basic-clean",
+      "read_level": 1,
+      "write_level": 2,
+      "use_category": false,
+      "use_secret": true,
+      "use_comment": true,
+      "description": "일반 게시판(정책에 따라 권한 조정)"
+    }
+  ],
+  "menus": [
+    {
+      "name": "홈",
+      "url": "/",
+      "target": "_self",
+      "order": 1,
+      "children": []
+    },
+    {
+      "name": "회사소개",
+      "url": "/page/about.php",
+      "target": "_self",
+      "order": 2,
+      "children": []
+    },
+    {
+      "name": "서비스",
+      "url": "/page/service.php",
+      "target": "_self",
+      "order": 3,
+      "children": [
+        {
+          "name": "서비스 소개",
+          "url": "/page/service.php",
+          "target": "_self",
+          "order": 1
+        },
+        {
+          "name": "진행 과정",
+          "url": "/#section-advantage",
+          "target": "_self",
+          "order": 2
+        }
+      ]
+    },
+    {
+      "name": "포트폴리오",
+      "url": "/bbs/board.php?bo_table=portfolio",
+      "target": "_self",
+      "order": 4,
+      "children": []
+    },
+    {
+      "name": "칼럼",
+      "url": "/bbs/board.php?bo_table=column",
+      "target": "_self",
+      "order": 5,
+      "children": []
+    },
+    {
+      "name": "FAQ",
+      "url": "/bbs/board.php?bo_table=faq",
+      "target": "_self",
+      "order": 6,
+      "children": []
+    },
+    {
+      "name": "문의",
+      "url": "/page/contact.php",
+      "target": "_self",
+      "order": 7,
+      "children": []
+    }
+  ]
+}

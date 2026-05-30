@@ -1,0 +1,37 @@
+[
+  {
+    "area": "강남",
+    "service": "피부과",
+    "main_keyword": "강남 피부과",
+    "description": "강남 지역 고객을 위한 피부과 안내 페이지입니다.",
+    "page_mode": "local"
+  },
+  {
+    "area": "수원",
+    "service": "개인회생",
+    "main_keyword": "수원 개인회생",
+    "description": "수원 지역 개인회생 상담을 위한 안내 페이지입니다.",
+    "page_mode": "local"
+  },
+  {
+    "area": "부산",
+    "service": "운전연수",
+    "main_keyword": "부산 운전연수",
+    "description": "부산 지역 운전연수 학원·교육 정보를 안내하는 페이지입니다.",
+    "page_mode": "local"
+  },
+  {
+    "area": "세부",
+    "service": "마사지",
+    "main_keyword": "세부 마사지",
+    "description": "세부 지역 마사지·웰니스 서비스 안내 페이지입니다.",
+    "page_mode": "online"
+  },
+  {
+    "area": "세부",
+    "service": "영어캠프",
+    "main_keyword": "세부 영어캠프",
+    "description": "세부 지역 영어캠프 정보를 안내하는 페이지입니다.",
+    "page_mode": "online"
+  }
+]

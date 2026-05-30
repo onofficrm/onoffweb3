@@ -1,0 +1,10 @@
+# 직접 URL로 index.html 접근 차단 (page.php 경유·enabled 검사 우회 방지)
+Options -Indexes
+<FilesMatch "\.(html|htm)$">
+    Require all denied
+</FilesMatch>
+
+# 실행 파일 차단 (이중 방어)
+<FilesMatch "\.(php|phtml|phar|cgi|pl|exe|sh|bat|cmd)$">
+    Require all denied
+</FilesMatch>

@@ -1,0 +1,19 @@
+<?php
+/**
+ * 로컬 개발용 DB 설정
+ *
+ * 1. 이 파일을 복사: cp dbconfig.local.php.example dbconfig.local.php
+ * 2. 아래 계정/비밀번호를 본인 Mac의 MariaDB/MySQL에 맞게 수정
+ * 3. 호스팅 phpMyAdmin에서 DB 덤프(.sql) 받아 로컬 DB에 import
+ * 4. php -S 127.0.0.1:8080 후 http://127.0.0.1:8080/ 접속
+ *
+ * ※ 원격(iwinv) DB는 보안상 집/회사 IP에서 접속이 막혀 있어
+ *    로컬 PHP 서버만 켜서는 연결되지 않습니다.
+ */
+if (!defined('_GNUBOARD_')) exit;
+
+define('G5_MYSQL_HOST', '127.0.0.1');
+define('G5_MYSQL_USER', 'root');
+define('G5_MYSQL_PASSWORD', '여기에_로컬_DB_비밀번호');
+define('G5_MYSQL_DB', 'your_local_db_name');
+define('G5_MYSQL_SET_MODE', true);

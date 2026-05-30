@@ -1,0 +1,29 @@
+# macOS
+._*
+.DS_Store
+
+# DB·민감 설정
+data/dbconfig.php
+data/dbconfig.local.php
+data/icrm.config.php
+
+# 런타임·업로드 (서버/FTP에서 별도 관리)
+data/cache/
+data/session/
+data/file/
+data/log/
+data/tmp/
+
+# 빌더 임시 입력
+_BUILDER_INPUT/
+
+# Node·환경
+node_modules/
+.env
+.env.*
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo

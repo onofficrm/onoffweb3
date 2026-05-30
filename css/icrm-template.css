@@ -1,0 +1,169 @@
+@charset "utf-8";
+
+/* ==========================================================================
+   iCRM 게시글 HTML 템플릿 (DB 직접 발행) — 모든 사이트 공통
+   로드: head.php · common_header · board_content_head (extend/icrm.extend.php)
+   ========================================================================== */
+
+.icrm-template {
+  box-sizing: border-box;
+  max-width: 940px;
+  margin: 0 auto;
+  padding: 26px;
+  background: #ffffff;
+  color: #1f2937;
+  font-family: inherit;
+  line-height: 1.9;
+  word-break: keep-all;
+}
+
+.icrm-template *,
+.icrm-template *::before,
+.icrm-template *::after {
+  box-sizing: border-box;
+}
+
+.icrm-template img {
+  max-width: 100%;
+  height: auto;
+}
+
+.icrm-template h2,
+.icrm-template h3 {
+  font-weight: 900;
+  line-height: 1.4;
+}
+
+.icrm-template p,
+.icrm-template li {
+  line-height: 1.9;
+}
+
+.icrm-template .icrm-content {
+  margin: 0 0 1rem;
+}
+
+.icrm-template .icrm-section {
+  margin: 22px 0;
+  padding: 20px;
+  border-radius: 24px;
+  border: 1px solid #e5e7eb;
+  background: #f8fafc;
+}
+
+.icrm-template .icrm-section strong {
+  display: block;
+  font-size: 1.08em;
+  line-height: 1.45;
+}
+
+.icrm-template .icrm-facility-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+  gap: 14px;
+  margin: 22px 0;
+  padding: 20px;
+  border-radius: 24px;
+  border: 1px solid #e5e7eb;
+  background: #f8fafc;
+}
+
+.icrm-template .icrm-facility-card {
+  padding: 18px;
+  border-radius: 24px;
+  background: #ecfeff;
+  border: 1px solid #a5f3fc;
+}
+
+.icrm-template .icrm-cta {
+  text-align: center;
+  background: #eef2ff;
+  border-color: #c7d2fe;
+}
+
+.icrm-template .icrm-cta-button,
+.icrm-template a.icrm-cta-button {
+  display: inline-block;
+  margin-top: 14px;
+  padding: 11px 18px;
+  border-radius: 999px;
+  background: #1e3a8a;
+  color: #fff !important;
+  text-decoration: none !important;
+  font-weight: 900;
+  box-shadow: 0 12px 26px rgba(30, 58, 138, 0.22);
+}
+
+.icrm-template .icrm-cta-button:hover,
+.icrm-template a.icrm-cta-button:hover {
+  background: #1e40af;
+  color: #fff !important;
+}
+
+.icrm-template-room-facility h2 {
+  text-align: center;
+  color: #155e75;
+}
+
+.icrm-template-room-facility img {
+  border-radius: 28px;
+}
+
+/* 그누보드 기본 스킨 (#bo_v .bo_v_con) — .icrm-template 래퍼 없이 조각만 있을 때 */
+#bo_v .bo_v_con .icrm-section,
+.board-wrap .board-view__body .icrm-section,
+.bo_v_con .icrm-section {
+  margin: 22px 0;
+  padding: 20px;
+  border-radius: 24px;
+  border: 1px solid #e5e7eb;
+  background: #f8fafc;
+}
+
+#bo_v .bo_v_con .icrm-facility-grid,
+.bo_v_con .icrm-facility-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+  gap: 14px;
+}
+
+#bo_v .bo_v_con .icrm-facility-card,
+.bo_v_con .icrm-facility-card {
+  padding: 18px;
+  border-radius: 24px;
+  background: #ecfeff;
+  border: 1px solid #a5f3fc;
+}
+
+#bo_v .bo_v_con a.icrm-cta-button,
+.bo_v_con a.icrm-cta-button {
+  display: inline-block;
+  padding: 11px 18px;
+  border-radius: 999px;
+  background: #1e3a8a;
+  color: #fff !important;
+  font-weight: 900;
+}
+
+@media (max-width: 640px) {
+  .icrm-template {
+    max-width: 100% !important;
+    padding: 18px !important;
+  }
+
+  .icrm-template .icrm-section {
+    padding: 16px !important;
+    border-radius: 18px !important;
+  }
+
+  .icrm-template .icrm-facility-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .icrm-template .icrm-cta-button,
+  .icrm-template a.icrm-cta-button {
+    display: block;
+    width: 100%;
+    text-align: center;
+  }
+}

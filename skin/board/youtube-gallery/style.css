@@ -1,0 +1,128 @@
+@charset "utf-8";
+
+@import url("../basic-clean/style.css");
+@import url("../youtube-list/style.css");
+
+/* Fallback: /img/common/no-youtube.svg (PHP: G5B_FALLBACK_NO_YOUTUBE_URL) */
+
+/* youtube-gallery — 카드 그리드 (list 전용 오버라이드) */
+.board-list--youtube-gallery .board-list__grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--card-gap, var(--space-lg, 1.5rem));
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.board-list--youtube-gallery .board-list__card {
+  position: relative;
+  margin: 0;
+}
+
+.board-list--youtube-gallery .board-list__card-link {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  border: 1px solid var(--color-line, #e2e8f0);
+  border-radius: var(--card-radius, var(--radius-lg, 12px));
+  overflow: hidden;
+  background: var(--color-bg, #fff);
+  text-decoration: none;
+  color: inherit;
+  transition: box-shadow var(--transition-base, 250ms ease), transform var(--transition-fast, 150ms ease);
+}
+
+.board-list--youtube-gallery .board-list__card-link:hover {
+  box-shadow: var(--shadow-elevated);
+  transform: translateY(-3px);
+}
+
+.board-list--youtube-gallery .board-list__card--notice .board-list__card-link {
+  border-color: color-mix(in srgb, var(--color-primary, #2563eb) 35%, var(--color-line, #e2e8f0));
+}
+
+.board-list--youtube-gallery .board-list__card-chk {
+  position: absolute;
+  top: var(--space-sm, 0.5rem);
+  left: var(--space-sm, 0.5rem);
+  z-index: 4;
+}
+
+.board-list--youtube-gallery .board-list__thumb-wrap--gallery {
+  position: relative;
+  aspect-ratio: 16 / 9;
+  background: var(--board-media-bg);
+}
+
+.board-list--youtube-gallery .board-list__thumb-wrap--gallery .board-yt-thumb {
+  border-radius: 0;
+}
+
+.board-yt-play--overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--board-overlay-scrim-light);
+  color: var(--board-on-media);
+  font-size: 3.5rem;
+  opacity: 1;
+  transition: background var(--transition-fast, 150ms ease);
+  pointer-events: none;
+}
+
+.board-list--youtube-gallery .board-list__card-link:hover .board-yt-play--overlay {
+  background: var(--board-overlay-scrim);
+}
+
+.board-list--youtube-gallery .board-list__badge-notice {
+  position: absolute;
+  top: var(--space-sm, 0.5rem);
+  right: var(--space-sm, 0.5rem);
+  z-index: 2;
+}
+
+.board-list--youtube-gallery .board-list__card-body {
+  padding: var(--space-md, 1rem) var(--space-lg, 1.5rem) var(--space-lg, 1.5rem);
+}
+
+.board-title--yt-card .board-title__text {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  font-size: var(--font-size-base, 1rem);
+  font-weight: var(--font-weight-semibold, 600);
+  color: var(--color-text, #1e293b);
+}
+
+.board-list--youtube-gallery .board-list__card-link:hover .board-title__text {
+  color: var(--color-primary, #2563eb);
+}
+
+.board-list--youtube-gallery .board-list__meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-sm, 0.5rem) var(--space-md, 1rem);
+  margin-top: var(--space-sm, 0.5rem);
+  font-size: var(--font-size-sm, 0.875rem);
+  color: var(--color-muted, #64748b);
+}
+
+@media (max-width: 1024px) {
+  .board-list--youtube-gallery .board-list__grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 480px) {
+  .board-list--youtube-gallery .board-list__grid {
+    grid-template-columns: 1fr;
+  }
+
+  .board-yt-play--overlay {
+    font-size: 2.5rem;
+  }
+}

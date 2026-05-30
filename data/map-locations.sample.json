@@ -1,0 +1,67 @@
+[
+  {
+    "id": 1,
+    "name": "[샘플] 세부 시티 병원",
+    "category": "병원",
+    "address": "Cebu City, Philippines (샘플 주소)",
+    "lat": 10.3157,
+    "lng": 123.8854,
+    "phone": "000-0000-0000",
+    "hours": "09:00 - 18:00",
+    "link": "/bbs/board.php?bo_table=location&wr_id=1",
+    "description": "샘플 병원 장소 데이터입니다. 실제 업체 정보가 아닙니다.",
+    "tags": ["세부", "샘플", "병원"]
+  },
+  {
+    "id": 2,
+    "name": "[샘플] ITM 학원",
+    "category": "학원",
+    "address": "IT Park area, Cebu City (샘플)",
+    "lat": 10.3289,
+    "lng": 123.9051,
+    "phone": "000-0000-0001",
+    "hours": "10:00 - 21:00",
+    "link": "/bbs/board.php?bo_table=location&wr_id=2",
+    "description": "샘플 학원 데이터입니다.",
+    "tags": ["샘플", "학원", "영어"]
+  },
+  {
+    "id": 3,
+    "name": "[샘플] 리조트 스파",
+    "category": "마사지",
+    "address": "Lahug, Cebu City (샘플)",
+    "lat": 10.3212,
+    "lng": 123.8988,
+    "phone": "000-0000-0002",
+    "hours": "11:00 - 22:00",
+    "link": "#",
+    "description": "샘플 마사지·스파 장소입니다.",
+    "tags": ["샘플", "마사지", "스파"]
+  },
+  {
+    "id": 4,
+    "name": "[샘플] 해변 레스토랑",
+    "category": "음식점",
+    "address": "Mactan vicinity (샘플)",
+    "lat": 10.3075,
+    "lng": 123.9612,
+    "phone": "000-0000-0003",
+    "hours": "11:00 - 23:00",
+    "link": "#",
+    "description": "샘플 음식점 데이터입니다.",
+    "tags": ["샘플", "음식점", "해변"]
+  },
+  {
+    "id": 5,
+    "name": "[샘플] 오슬롭 투어 거점",
+    "category": "여행지",
+    "address": "Oslob area, Cebu (샘플)",
+    "lat": 9.4989,
+    "lng": 123.3802,
+    "phone": "000-0000-0004",
+    "hours": "06:00 - 17:00",
+    "link": "#",
+    "description": "샘플 여행·관광지 데이터입니다.",
+    "tags": ["샘플", "여행", "세부"]
+  }
+]

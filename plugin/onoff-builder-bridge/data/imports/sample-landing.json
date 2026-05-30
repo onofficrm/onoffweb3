@@ -1,0 +1,14 @@
+{
+  "id": "sample-landing",
+  "name": "[샘플] 랜딩 페이지 (비활성)",
+  "type": "vite-dist",
+  "enabled": false,
+  "mode": "standalone",
+  "import_path": "/plugin/onoff-builder-bridge/imports/sample-landing",
+  "entry_file": "index.html",
+  "seo_title": "샘플 랜딩 (테스트용)",
+  "seo_description": "플러그인 구조 확인용 샘플입니다. enabled=false 로 공개되지 않습니다.",
+  "memo": "자동 노출 금지. 구조 참고용만 사용하세요.",
+  "created_at": "2026-01-01 00:00:00",
+  "updated_at": "2026-01-01 00:00:00"
+}
