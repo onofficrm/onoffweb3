@@ -8,7 +8,7 @@
     "seo_title":  "CEBU 24 RESCUE | 세부 24 긴급출동",
     "name":  "CEBU 24 RESCUE",
     "import_path":  "/plugin/onoff-builder-bridge/imports/cebu24-rescue",
-    "updated_at":  "2026-09-18 15:59:10",
-    "memo":  "Always show My request section on History/My + bottom nav on assigned",
+    "updated_at":  "2026-09-18 16:03:04",
+    "memo":  "Single active-request card (green); remove bottom LIVE duplicate",
     "enabled":  true
 }
