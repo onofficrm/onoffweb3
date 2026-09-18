@@ -1,0 +1,14 @@
+﻿{
+  "id": "cebu24-rescue",
+  "name": "CEBU 24 RESCUE",
+  "type": "vite-dist",
+  "enabled": true,
+  "mode": "standalone",
+  "import_path": "/plugin/onoff-builder-bridge/imports/cebu24-rescue",
+  "entry_file": "index.html",
+  "seo_title": "CEBU 24 RESCUE | 세부 24 긴급출동",
+  "seo_description": "세부 24시 자동차 긴급출동 서비스 고객용 앱 (24/7 Roadside Assistance in Cebu)",
+  "memo": "Google AI Studio builder dist",
+  "created_at": "2026-09-18 00:00:00",
+  "updated_at": "2026-09-18 00:00:00"
+}

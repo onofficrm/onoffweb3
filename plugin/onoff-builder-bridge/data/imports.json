@@ -5,5 +5,12 @@
     "path": "sample-landing",
     "entry": "index.html",
     "created_at": "2026-01-01 00:00:00"
+  },
+  {
+    "id": "cebu24-rescue",
+    "name": "CEBU 24 RESCUE",
+    "path": "cebu24-rescue",
+    "entry": "index.html",
+    "created_at": "2026-09-18 00:00:00"
   }
 ]
