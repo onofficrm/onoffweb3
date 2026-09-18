@@ -2,13 +2,13 @@
     "mode":  "standalone",
     "id":  "cebu24-rescue",
     "type":  "vite-dist",
-    "seo_description":  "세부 24시 자동차 긴급출동 서비스 고객용 앱 (24/7 Roadside Assistance in Cebu)",
+    "seo_description":  "세부 24시 자동차 긴급출동 서비스 고객용 앱",
     "entry_file":  "index.html",
     "created_at":  "2026-09-18 00:00:00",
     "seo_title":  "CEBU 24 RESCUE | 세부 24 긴급출동",
     "name":  "CEBU 24 RESCUE",
     "import_path":  "/plugin/onoff-builder-bridge/imports/cebu24-rescue",
-    "updated_at":  "2026-09-18 13:44:57",
-    "memo":  "Google Maps API integration",
+    "updated_at":  "2026-09-18 14:04:49",
+    "memo":  "Free OSM + Leaflet map",
     "enabled":  true
 }
