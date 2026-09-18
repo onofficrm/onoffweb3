@@ -4,6 +4,25 @@ include_once('./_common.php');
 define('_INDEX_', true);
 if (!defined('_GNUBOARD_')) exit; // 개별 페이지 접근 불가
 
+// 홈 빌더 브릿지 — _site.config.php 의 home_builder_bridge_id
+// 예: cebu24-rescue → /plugin/onoff-builder-bridge/imports/cebu24-rescue
+if (!isset($site_config) && is_file(G5_PATH . '/_site.config.php')) {
+    include_once(G5_PATH . '/_site.config.php');
+}
+$home_builder_id = function_exists('g5site_cfg') ? trim(g5site_cfg('home_builder_bridge_id', '')) : '';
+if ($home_builder_id !== '') {
+    $bridge_boot = G5_PLUGIN_PATH . '/onoff-builder-bridge/bootstrap.php';
+    if (is_file($bridge_boot)) {
+        include_once($bridge_boot);
+        if (function_exists('onoff_builder_has_import')
+            && onoff_builder_has_import($home_builder_id)
+            && function_exists('onoff_builder_render_import_page')
+        ) {
+            onoff_builder_render_import_page($home_builder_id);
+        }
+    }
+}
+
 // 테마 사용 시 테마 index로 위임 (기존 동작 유지)
 if (defined('G5_THEME_PATH')) {
     require_once(G5_THEME_PATH.'/index.php');
