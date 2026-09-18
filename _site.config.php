@@ -59,7 +59,7 @@ $site_config = array(
     'kakao_map_lat'       => '37.5665',
     'kakao_map_lng'       => '126.9780',
     /* Google Maps — 내 주변 찾기 (components/maps, page/map-locator.php) */
-    'google_maps_api_key'       => '',
+    'google_maps_api_key'       => '',  /* Google Cloud Console Maps JS + Geocoding — 키 입력 시 빌더 홈 지도 활성화 */
     'map_default_lat'           => '10.3157',
     'map_default_lng'           => '123.8854',
     'map_default_zoom'          => 13,

@@ -8,7 +8,7 @@
     "seo_title":  "CEBU 24 RESCUE | 세부 24 긴급출동",
     "name":  "CEBU 24 RESCUE",
     "import_path":  "/plugin/onoff-builder-bridge/imports/cebu24-rescue",
-    "updated_at":  "2026-09-18 11:34:44",
-    "memo":  "Google AI Studio builder dist — reapplied from build/",
+    "updated_at":  "2026-09-18 13:44:57",
+    "memo":  "Google Maps API integration",
     "enabled":  true
 }

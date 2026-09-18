@@ -447,6 +447,46 @@ if (!function_exists('onoff_builder_page_url')) {
     }
 }
 
+/**
+ * Inject runtime config into builder HTML (Google Maps key from _site.config.php).
+ */
+if (!function_exists('onoff_builder_inject_runtime_config')) {
+    function onoff_builder_inject_runtime_config($html)
+    {
+        if (!is_string($html) || $html === '') {
+            return $html;
+        }
+
+        if (!isset($GLOBALS['site_config']) && defined('G5_PATH') && is_file(G5_PATH . '/_site.config.php')) {
+            include_once G5_PATH . '/_site.config.php';
+        }
+
+        $maps_key = '';
+        if (function_exists('g5site_cfg')) {
+            $maps_key = trim((string) g5site_cfg('google_maps_api_key', ''));
+        } elseif (isset($GLOBALS['site_config']['google_maps_api_key'])) {
+            $maps_key = trim((string) $GLOBALS['site_config']['google_maps_api_key']);
+        }
+
+        $payload = array(
+            'googleMapsApiKey' => $maps_key,
+        );
+        $json = json_encode($payload, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+        if ($json === false) {
+            return $html;
+        }
+
+        $script = '<script>window.__CEBU24_RUNTIME__=' . $json
+            . ';if(window.__CEBU24_RUNTIME__.googleMapsApiKey){window.__CEBU24_GOOGLE_MAPS_KEY__=window.__CEBU24_RUNTIME__.googleMapsApiKey;}</script>';
+
+        if (preg_match('/<head[^>]*>/i', $html)) {
+            return preg_replace('/<head[^>]*>/i', '$0' . $script, $html, 1);
+        }
+
+        return $script . $html;
+    }
+}
+
 if (!function_exists('onoff_builder_render_page_error')) {
     function onoff_builder_render_page_error($message, $title = '페이지 안내')
     {
@@ -608,6 +648,7 @@ if (!function_exists('onoff_builder_render_import_page')) {
 
         $html = onoff_builder_remove_base_tags($html);
         $html = onoff_builder_rewrite_asset_paths($html, $id, $entry);
+        $html = onoff_builder_inject_runtime_config($html);
 
         header('Content-Type: text/html; charset=utf-8');
         echo $html;
