@@ -8,7 +8,7 @@
     "seo_title":  "CEBU 24 RESCUE | 세부 24 긴급출동",
     "name":  "CEBU 24 RESCUE",
     "import_path":  "/plugin/onoff-builder-bridge/imports/cebu24-rescue",
-    "updated_at":  "2026-09-18 14:04:49",
-    "memo":  "Free OSM + Leaflet map",
+    "updated_at":  "2026-09-18 15:43:51",
+    "memo":  "Persist active request + home/history/my entry",
     "enabled":  true
 }
