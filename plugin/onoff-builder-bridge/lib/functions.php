@@ -470,6 +470,7 @@ if (!function_exists('onoff_builder_inject_runtime_config')) {
 
         $payload = array(
             'googleMapsApiKey' => $maps_key,
+            'dispatchApiUrl' => rtrim(ONOFF_BUILDER_URL, '/') . '/api/dispatch.php',
         );
         $json = json_encode($payload, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
         if ($json === false) {
