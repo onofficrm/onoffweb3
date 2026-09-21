@@ -38,6 +38,13 @@ if (!cebu24_rate_limit_ok('ip:' . $ip, 40, 600)) {
     cebu24_api_json(false, array('error' => 'rate_limited'), 429);
 }
 
+if ($action === 'list') {
+    $mark_phone = (strlen($phone) >= 10 && strlen($pin) === 4) ? $phone : '';
+    $mark_pin = $mark_phone !== '' ? $pin : '';
+    $items = cebu24_list_public_dispatches($mark_phone, $mark_pin);
+    cebu24_api_json(true, array('items' => $items));
+}
+
 if (strlen($phone) < 10 || strlen($phone) > 13) {
     cebu24_api_json(false, array('error' => 'invalid_phone'), 400);
 }

@@ -90,6 +90,79 @@ if (!function_exists('cebu24_sanitize_dispatch_item')) {
     }
 }
 
+if (!function_exists('cebu24_public_area')) {
+    function cebu24_public_area($item)
+    {
+        $raw = '';
+        if (!empty($item['landmark'])) {
+            $raw = (string) $item['landmark'];
+        } elseif (!empty($item['locationAddress'])) {
+            $raw = (string) $item['locationAddress'];
+        }
+        $part = trim(explode(',', $raw)[0]);
+        if ($part === '') {
+            return 'Cebu';
+        }
+        if (function_exists('mb_substr')) {
+            return mb_substr($part, 0, 18);
+        }
+        return substr($part, 0, 18);
+    }
+}
+
+if (!function_exists('cebu24_list_public_dispatches')) {
+    /**
+     * All recent requests, PII stripped. Optional phone+pin marks the caller's own rows.
+     */
+    function cebu24_list_public_dispatches($phone_norm = '', $pin = '')
+    {
+        $dir = cebu24_dispatch_store_dir();
+        $mine_ids = array();
+        if ($phone_norm !== '' && strlen($pin) === 4) {
+            $bucket = cebu24_load_phone_bucket($phone_norm);
+            if ($bucket && !empty($bucket['pin_hash']) && password_verify($pin, $bucket['pin_hash'])) {
+                foreach ((isset($bucket['items']) && is_array($bucket['items'])) ? $bucket['items'] : array() as $own) {
+                    if (is_array($own) && !empty($own['id'])) {
+                        $mine_ids[(string) $own['id']] = true;
+                    }
+                }
+            }
+        }
+
+        $rows = array();
+        foreach (glob($dir . '/*.json') ?: array() as $file) {
+            if (basename($file)[0] === '_') {
+                continue;
+            }
+            $raw = @file_get_contents($file);
+            $data = $raw ? json_decode($raw, true) : null;
+            if (!is_array($data) || empty($data['items']) || !is_array($data['items'])) {
+                continue;
+            }
+            foreach ($data['items'] as $item) {
+                if (!is_array($item) || empty($item['id'])) {
+                    continue;
+                }
+                $id = (string) $item['id'];
+                $rows[] = array(
+                    'id' => $id,
+                    'serviceId' => isset($item['serviceId']) ? $item['serviceId'] : '',
+                    'status' => isset($item['status']) ? $item['status'] : '',
+                    'requestedAt' => isset($item['requestedAt']) ? $item['requestedAt'] : '',
+                    'createdAtMs' => isset($item['createdAtMs']) ? (int) $item['createdAtMs'] : 0,
+                    'area' => cebu24_public_area($item),
+                    'mine' => isset($mine_ids[$id]),
+                );
+            }
+        }
+
+        usort($rows, function ($a, $b) {
+            return ($b['createdAtMs'] ?? 0) <=> ($a['createdAtMs'] ?? 0);
+        });
+        return array_slice($rows, 0, 80);
+    }
+}
+
 if (!function_exists('cebu24_rate_limit_ok')) {
     function cebu24_rate_limit_ok($key, $max = 20, $window_sec = 600)
     {
