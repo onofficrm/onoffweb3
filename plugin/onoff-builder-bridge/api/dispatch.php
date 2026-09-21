@@ -45,6 +45,21 @@ if ($action === 'list') {
     cebu24_api_json(true, array('items' => $items));
 }
 
+if ($action === 'admin_list' || $action === 'admin_status') {
+    if (!cebu24_admin_pin_ok($pin)) {
+        cebu24_api_json(false, array('error' => 'pin_mismatch'), 403);
+    }
+    if ($action === 'admin_list') {
+        cebu24_api_json(true, array('items' => cebu24_admin_list_dispatches()));
+    }
+    $id = isset($body['id']) ? (string) $body['id'] : '';
+    $status = isset($body['status']) ? (string) $body['status'] : '';
+    if (!cebu24_admin_set_status($id, $status)) {
+        cebu24_api_json(false, array('error' => 'not_found'), 404);
+    }
+    cebu24_api_json(true, array('id' => $id, 'status' => $status));
+}
+
 if (strlen($phone) < 10 || strlen($phone) > 13) {
     cebu24_api_json(false, array('error' => 'invalid_phone'), 400);
 }
@@ -62,6 +77,10 @@ if ($action === 'save') {
         cebu24_api_json(false, array('error' => 'invalid_item'), 400);
     }
     $item['contactPhone'] = $phone;
+    $item['customerPin'] = $pin;
+    if (empty($item['adminCallStatus'])) {
+        $item['adminCallStatus'] = 'pending';
+    }
     $item['savedAt'] = date('c');
 
     $bucket = cebu24_load_phone_bucket($phone);

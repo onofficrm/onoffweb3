@@ -163,6 +163,82 @@ if (!function_exists('cebu24_list_public_dispatches')) {
     }
 }
 
+if (!function_exists('cebu24_admin_pin_ok')) {
+    function cebu24_admin_pin_ok($pin)
+    {
+        return hash_equals('8282', (string) $pin);
+    }
+}
+
+if (!function_exists('cebu24_admin_list_dispatches')) {
+    function cebu24_admin_list_dispatches()
+    {
+        $dir = cebu24_dispatch_store_dir();
+        $rows = array();
+        foreach (glob($dir . '/*.json') ?: array() as $file) {
+            if (basename($file)[0] === '_') {
+                continue;
+            }
+            $raw = @file_get_contents($file);
+            $data = $raw ? json_decode($raw, true) : null;
+            if (!is_array($data) || empty($data['items']) || !is_array($data['items'])) {
+                continue;
+            }
+            foreach ($data['items'] as $item) {
+                if (!is_array($item) || empty($item['id'])) {
+                    continue;
+                }
+                $clean = cebu24_sanitize_dispatch_item($item);
+                if (!$clean) {
+                    continue;
+                }
+                if (empty($clean['adminCallStatus'])) {
+                    $clean['adminCallStatus'] = 'pending';
+                }
+                $rows[] = $clean;
+            }
+        }
+        usort($rows, function ($a, $b) {
+            return ($b['createdAtMs'] ?? 0) <=> ($a['createdAtMs'] ?? 0);
+        });
+        return array_slice($rows, 0, 80);
+    }
+}
+
+if (!function_exists('cebu24_admin_set_status')) {
+    function cebu24_admin_set_status($id, $status)
+    {
+        $allowed = array('pending', 'contacted', 'completed');
+        if (!in_array($status, $allowed, true) || $id === '') {
+            return false;
+        }
+        $dir = cebu24_dispatch_store_dir();
+        foreach (glob($dir . '/*.json') ?: array() as $file) {
+            if (basename($file)[0] === '_') {
+                continue;
+            }
+            $raw = @file_get_contents($file);
+            $data = $raw ? json_decode($raw, true) : null;
+            if (!is_array($data) || empty($data['items']) || !is_array($data['items'])) {
+                continue;
+            }
+            $changed = false;
+            foreach ($data['items'] as $i => $item) {
+                if (is_array($item) && isset($item['id']) && (string) $item['id'] === (string) $id) {
+                    $data['items'][$i]['adminCallStatus'] = $status;
+                    $changed = true;
+                }
+            }
+            if ($changed) {
+                $data['updated_at'] = date('c');
+                $json = json_encode($data, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+                return $json !== false && @file_put_contents($file, $json, LOCK_EX) !== false;
+            }
+        }
+        return false;
+    }
+}
+
 if (!function_exists('cebu24_rate_limit_ok')) {
     function cebu24_rate_limit_ok($key, $max = 20, $window_sec = 600)
     {
