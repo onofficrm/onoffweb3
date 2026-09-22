@@ -144,8 +144,21 @@ if (!function_exists('cebu24_list_public_dispatches')) {
                     continue;
                 }
                 $id = (string) $item['id'];
+                $receipt = '';
+                if (!empty($item['receiptNo']) && preg_match('/^\d{4}$/', (string) $item['receiptNo'])) {
+                    $receipt = (string) $item['receiptNo'];
+                } elseif (!empty($item['contactPhone'])) {
+                    $phone_digits = preg_replace('/\D+/', '', (string) $item['contactPhone']);
+                    if (is_string($phone_digits) && strlen($phone_digits) >= 4) {
+                        $receipt = substr($phone_digits, -4);
+                    }
+                }
+                if ($receipt === '') {
+                    $receipt = '----';
+                }
                 $rows[] = array(
                     'id' => $id,
+                    'receiptNo' => $receipt,
                     'serviceId' => isset($item['serviceId']) ? $item['serviceId'] : '',
                     'status' => isset($item['status']) ? $item['status'] : '',
                     'requestedAt' => isset($item['requestedAt']) ? $item['requestedAt'] : '',
