@@ -163,6 +163,8 @@ if (!function_exists('cebu24_list_public_dispatches')) {
                     'status' => isset($item['status']) ? $item['status'] : '',
                     'requestedAt' => isset($item['requestedAt']) ? $item['requestedAt'] : '',
                     'createdAtMs' => isset($item['createdAtMs']) ? (int) $item['createdAtMs'] : 0,
+                    'updatedAtMs' => cebu24_item_activity_ms($item),
+                    'pending' => cebu24_item_is_pending($item),
                     'area' => cebu24_public_area($item),
                     'mine' => isset($mine_ids[$id]),
                 );
@@ -239,6 +241,7 @@ if (!function_exists('cebu24_admin_set_status')) {
             foreach ($data['items'] as $i => $item) {
                 if (is_array($item) && isset($item['id']) && (string) $item['id'] === (string) $id) {
                     $data['items'][$i]['adminCallStatus'] = $status;
+                    $data['items'][$i]['statusUpdatedAt'] = (int) round(microtime(true) * 1000);
                     $changed = true;
                 }
             }
@@ -249,6 +252,65 @@ if (!function_exists('cebu24_admin_set_status')) {
             }
         }
         return false;
+    }
+}
+
+if (!function_exists('cebu24_item_activity_ms')) {
+    function cebu24_item_activity_ms($item)
+    {
+        $updated = isset($item['statusUpdatedAt']) ? (int) $item['statusUpdatedAt'] : 0;
+        $created = isset($item['createdAtMs']) ? (int) $item['createdAtMs'] : 0;
+        return max($updated, $created);
+    }
+}
+
+if (!function_exists('cebu24_item_is_pending')) {
+    function cebu24_item_is_pending($item)
+    {
+        $status = isset($item['status']) ? (string) $item['status'] : '';
+        if (in_array($status, array('completed', 'cancelled'), true)) {
+            return false;
+        }
+        $call = isset($item['adminCallStatus']) ? (string) $item['adminCallStatus'] : 'pending';
+        return !in_array($call, array('contacted', 'completed'), true);
+    }
+}
+
+if (!function_exists('cebu24_each_dispatch_item')) {
+    function cebu24_each_dispatch_item($callback)
+    {
+        $dir = cebu24_dispatch_store_dir();
+        foreach (glob($dir . '/*.json') ?: array() as $file) {
+            if (basename($file)[0] === '_') {
+                continue;
+            }
+            $raw = @file_get_contents($file);
+            $data = $raw ? json_decode($raw, true) : null;
+            if (!is_array($data) || empty($data['items']) || !is_array($data['items'])) {
+                continue;
+            }
+            foreach ($data['items'] as $item) {
+                if (is_array($item) && !empty($item['id'])) {
+                    $callback($item);
+                }
+            }
+        }
+    }
+}
+
+if (!function_exists('cebu24_launcher_badge_count')) {
+    /**
+     * Unhandled customer requests. Zero once the admin has called or closed them.
+     */
+    function cebu24_launcher_badge_count()
+    {
+        $pending = 0;
+        cebu24_each_dispatch_item(function ($item) use (&$pending) {
+            if (cebu24_item_is_pending($item)) {
+                $pending++;
+            }
+        });
+        return $pending > 0 ? min($pending, 99) : 0;
     }
 }
 
