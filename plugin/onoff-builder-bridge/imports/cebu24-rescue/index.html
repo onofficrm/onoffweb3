@@ -21,11 +21,25 @@
         padding-top: max(72px, env(safe-area-inset-top, 0px)) !important;
         overflow: visible !important;
       }
-      header.sticky [class*="tracking-wider"] {
+      #app-header-brand > div:last-child {
+        flex-shrink: 0;
+        min-width: 0;
+      }
+      #app-header-brand [class*="tracking-wider"] {
         display: inline-block;
-        line-height: 1.6 !important;
-        padding-top: 4px;
+        white-space: nowrap !important;
+        line-height: 1.35 !important;
+        padding-top: 2px;
         overflow: visible !important;
+      }
+      @media (max-width: 359px) {
+        #app-header-brand > div:last-child > div:first-child > span:nth-child(2) {
+          display: none !important;
+        }
+        #app-header-brand [class*="tracking-wider"] {
+          font-size: 12px !important;
+          letter-spacing: 0.04em !important;
+        }
       }
       nav.fixed.bottom-0,
       .safe-bottom {
