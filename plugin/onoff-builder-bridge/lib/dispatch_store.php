@@ -300,7 +300,7 @@ if (!function_exists('cebu24_each_dispatch_item')) {
 
 if (!function_exists('cebu24_launcher_badge_count')) {
     /**
-     * Unhandled customer requests. Zero once the admin has called or closed them.
+     * Unhandled customer requests. Zero once the admin marks one in progress or done.
      */
     function cebu24_launcher_badge_count()
     {
