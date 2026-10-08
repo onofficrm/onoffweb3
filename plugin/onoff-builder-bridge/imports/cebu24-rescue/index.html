@@ -19,6 +19,13 @@
     <style>
       header.sticky {
         padding-top: max(72px, env(safe-area-inset-top, 0px)) !important;
+        overflow: visible !important;
+      }
+      header.sticky [class*="tracking-wider"] {
+        display: inline-block;
+        line-height: 1.6 !important;
+        padding-top: 4px;
+        overflow: visible !important;
       }
       nav.fixed.bottom-0,
       .safe-bottom {
