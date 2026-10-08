@@ -21,11 +21,16 @@
     <div id="root"></div>
     <script>
       (function () {
+        var marked = false;
         function markAdminPhone() {
+          if (marked) return;
           var native = window.Cebu24Native;
           if (!native || typeof native.markAdmin !== "function") return;
           if (!document.getElementById("screen-admin-dashboard")) return;
-          try { native.markAdmin(); } catch (e) {}
+          try {
+            native.markAdmin();
+            marked = true;
+          } catch (e) {}
         }
         setInterval(markAdminPhone, 1000);
       })();
