@@ -52,6 +52,7 @@ if ($action === 'admin_login') {
 $token = isset($body['token']) ? (string) $body['token'] : '';
 
 if ($action === 'admin_me' || $action === 'admin_logout' || $action === 'admin_register'
+    || $action === 'admin_accounts' || $action === 'admin_delete'
     || $action === 'admin_list' || $action === 'admin_status') {
     $admin = cebu24_admin_from_token($token);
     if (!$admin) {
@@ -76,6 +77,17 @@ if ($action === 'admin_me' || $action === 'admin_logout' || $action === 'admin_r
             'admin' => $created['admin'],
             'bootstrapReplaced' => !empty($created['bootstrapReplaced']),
         ));
+    }
+    if ($action === 'admin_accounts') {
+        cebu24_api_json(true, array('items' => cebu24_admin_list_accounts()));
+    }
+    if ($action === 'admin_delete') {
+        $target_id = isset($body['adminId']) ? (string) $body['adminId'] : '';
+        $deleted = cebu24_admin_delete($target_id, $admin['id']);
+        if (empty($deleted['ok'])) {
+            cebu24_api_json(false, array('error' => $deleted['error']), 400);
+        }
+        cebu24_api_json(true);
     }
     if ($action === 'admin_list') {
         cebu24_api_json(true, array('items' => cebu24_admin_list_dispatches(), 'admin' => $admin));

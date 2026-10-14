@@ -79,6 +79,7 @@ if (!function_exists('cebu24_admin_public')) {
             'id' => isset($admin['id']) ? (string) $admin['id'] : '',
             'name' => isset($admin['name']) ? (string) $admin['name'] : '',
             'role' => isset($admin['role']) ? (string) $admin['role'] : 'admin',
+            'createdAt' => isset($admin['createdAt']) ? (string) $admin['createdAt'] : '',
         );
     }
 }
@@ -197,5 +198,62 @@ if (!function_exists('cebu24_admin_create')) {
             'admin' => cebu24_admin_public($store['admins'][$id]),
             'bootstrapReplaced' => $bootstrap_replaced,
         );
+    }
+}
+
+if (!function_exists('cebu24_admin_list_accounts')) {
+    function cebu24_admin_list_accounts()
+    {
+        $store = cebu24_admin_load_store();
+        $items = array();
+        foreach ($store['admins'] as $admin) {
+            if (!is_array($admin) || empty($admin['active'])) {
+                continue;
+            }
+            $items[] = cebu24_admin_public($admin);
+        }
+        usort($items, function ($a, $b) {
+            return strcmp(isset($a['createdAt']) ? $a['createdAt'] : '', isset($b['createdAt']) ? $b['createdAt'] : '');
+        });
+        return $items;
+    }
+}
+
+if (!function_exists('cebu24_admin_delete')) {
+    function cebu24_admin_delete($target_id, $deleted_by)
+    {
+        $target_id = cebu24_admin_normalize_id($target_id);
+        $deleted_by = cebu24_admin_normalize_id($deleted_by);
+        if ($target_id === '' || $target_id === $deleted_by) {
+            return array('ok' => false, 'error' => 'cannot_delete_self');
+        }
+
+        $store = cebu24_admin_load_store();
+        if (empty($store['admins'][$target_id]) || empty($store['admins'][$target_id]['active'])) {
+            return array('ok' => false, 'error' => 'admin_not_found');
+        }
+
+        $active_count = 0;
+        foreach ($store['admins'] as $admin) {
+            if (is_array($admin) && !empty($admin['active'])) {
+                $active_count++;
+            }
+        }
+        if ($active_count <= 1) {
+            return array('ok' => false, 'error' => 'last_admin');
+        }
+
+        $store['admins'][$target_id]['active'] = false;
+        $store['admins'][$target_id]['deletedAt'] = date('c');
+        $store['admins'][$target_id]['deletedBy'] = $deleted_by;
+        foreach ($store['sessions'] as $session_key => $session) {
+            if (isset($session['adminId']) && cebu24_admin_normalize_id($session['adminId']) === $target_id) {
+                unset($store['sessions'][$session_key]);
+            }
+        }
+        if (!cebu24_admin_save_store($store)) {
+            return array('ok' => false, 'error' => 'save_failed');
+        }
+        return array('ok' => true);
     }
 }
