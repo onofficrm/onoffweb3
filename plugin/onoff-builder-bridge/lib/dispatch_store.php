@@ -216,7 +216,7 @@ if (!function_exists('cebu24_admin_list_dispatches')) {
         usort($rows, function ($a, $b) {
             return ($b['createdAtMs'] ?? 0) <=> ($a['createdAtMs'] ?? 0);
         });
-        return array_slice($rows, 0, 80);
+        return array_slice($rows, 0, 1000);
     }
 }
 
