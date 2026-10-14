@@ -221,7 +221,7 @@ if (!function_exists('cebu24_admin_list_dispatches')) {
 }
 
 if (!function_exists('cebu24_admin_set_status')) {
-    function cebu24_admin_set_status($id, $status)
+    function cebu24_admin_set_status($id, $status, $handled_by = '')
     {
         $allowed = array('pending', 'contacted', 'completed');
         if (!in_array($status, $allowed, true) || $id === '') {
@@ -242,6 +242,11 @@ if (!function_exists('cebu24_admin_set_status')) {
                 if (is_array($item) && isset($item['id']) && (string) $item['id'] === (string) $id) {
                     $data['items'][$i]['adminCallStatus'] = $status;
                     $data['items'][$i]['statusUpdatedAt'] = (int) round(microtime(true) * 1000);
+                    if ($status === 'pending') {
+                        unset($data['items'][$i]['handledBy']);
+                    } elseif ($handled_by !== '') {
+                        $data['items'][$i]['handledBy'] = (string) $handled_by;
+                    }
                     $changed = true;
                 }
             }

@@ -10,6 +10,7 @@ header('Cache-Control: no-store');
 include_once dirname(__FILE__) . '/../_common.php';
 include_once dirname(__FILE__) . '/../bootstrap.php';
 include_once dirname(__FILE__) . '/../lib/dispatch_store.php';
+include_once dirname(__FILE__) . '/../lib/admin_store.php';
 
 function cebu24_api_json($ok, $payload = array(), $http = 200)
 {
@@ -29,35 +30,70 @@ if (!is_array($body)) {
 }
 
 $action = isset($body['action']) ? (string) $body['action'] : '';
-$phone = cebu24_normalize_phone(isset($body['phone']) ? $body['phone'] : '');
-$pin = isset($body['pin']) ? preg_replace('/\D+/', '', (string) $body['pin']) : '';
-$pin = substr($pin, 0, 4);
 
 $ip = isset($_SERVER['REMOTE_ADDR']) ? $_SERVER['REMOTE_ADDR'] : 'unknown';
 if (!cebu24_rate_limit_ok('ip:' . $ip, 40, 600)) {
     cebu24_api_json(false, array('error' => 'rate_limited'), 429);
 }
 
+if ($action === 'admin_login') {
+    if (!cebu24_rate_limit_ok('admin-login:' . $ip, 10, 600)) {
+        cebu24_api_json(false, array('error' => 'rate_limited'), 429);
+    }
+    $admin_id = isset($body['adminId']) ? (string) $body['adminId'] : '';
+    $password = isset($body['password']) ? (string) $body['password'] : '';
+    $session = cebu24_admin_login($admin_id, $password);
+    if (!$session) {
+        cebu24_api_json(false, array('error' => 'invalid_admin_credentials'), 403);
+    }
+    cebu24_api_json(true, $session);
+}
+
+$token = isset($body['token']) ? (string) $body['token'] : '';
+
+if ($action === 'admin_me' || $action === 'admin_logout' || $action === 'admin_register'
+    || $action === 'admin_list' || $action === 'admin_status') {
+    $admin = cebu24_admin_from_token($token);
+    if (!$admin) {
+        cebu24_api_json(false, array('error' => 'admin_session_required'), 401);
+    }
+    if ($action === 'admin_me') {
+        cebu24_api_json(true, array('admin' => $admin));
+    }
+    if ($action === 'admin_logout') {
+        cebu24_admin_logout($token);
+        cebu24_api_json(true);
+    }
+    if ($action === 'admin_register') {
+        $new_id = isset($body['adminId']) ? (string) $body['adminId'] : '';
+        $new_password = isset($body['password']) ? (string) $body['password'] : '';
+        $new_name = isset($body['name']) ? (string) $body['name'] : '';
+        $created = cebu24_admin_create($new_id, $new_password, $new_name, $admin['id']);
+        if (empty($created['ok'])) {
+            cebu24_api_json(false, array('error' => $created['error']), 400);
+        }
+        cebu24_api_json(true, array('admin' => $created['admin']));
+    }
+    if ($action === 'admin_list') {
+        cebu24_api_json(true, array('items' => cebu24_admin_list_dispatches(), 'admin' => $admin));
+    }
+    $id = isset($body['id']) ? (string) $body['id'] : '';
+    $status = isset($body['status']) ? (string) $body['status'] : '';
+    if (!cebu24_admin_set_status($id, $status, $admin['id'])) {
+        cebu24_api_json(false, array('error' => 'not_found'), 404);
+    }
+    cebu24_api_json(true, array('id' => $id, 'status' => $status, 'handledBy' => $admin['id']));
+}
+
+$phone = cebu24_normalize_phone(isset($body['phone']) ? $body['phone'] : '');
+$pin = isset($body['pin']) ? preg_replace('/\D+/', '', (string) $body['pin']) : '';
+$pin = substr($pin, 0, 4);
+
 if ($action === 'list') {
     $mark_phone = (strlen($phone) >= 10 && strlen($pin) === 4) ? $phone : '';
     $mark_pin = $mark_phone !== '' ? $pin : '';
     $items = cebu24_list_public_dispatches($mark_phone, $mark_pin);
     cebu24_api_json(true, array('items' => $items));
-}
-
-if ($action === 'admin_list' || $action === 'admin_status') {
-    if (!cebu24_admin_pin_ok($pin)) {
-        cebu24_api_json(false, array('error' => 'pin_mismatch'), 403);
-    }
-    if ($action === 'admin_list') {
-        cebu24_api_json(true, array('items' => cebu24_admin_list_dispatches()));
-    }
-    $id = isset($body['id']) ? (string) $body['id'] : '';
-    $status = isset($body['status']) ? (string) $body['status'] : '';
-    if (!cebu24_admin_set_status($id, $status)) {
-        cebu24_api_json(false, array('error' => 'not_found'), 404);
-    }
-    cebu24_api_json(true, array('id' => $id, 'status' => $status));
 }
 
 if (strlen($phone) < 10 || strlen($phone) > 13) {

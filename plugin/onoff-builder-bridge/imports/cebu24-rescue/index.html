@@ -14,8 +14,6 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Montserrat:wght@800;900&display=swap" rel="stylesheet">
-    <script type="module" crossorigin src="/assets/index-DvIQzkvk.js"></script>
-    <link rel="stylesheet" crossorigin href="/assets/index-Bdko0UEz.css">
     <style>
       header.sticky {
         padding-top: max(72px, env(safe-area-inset-top, 0px)) !important;
@@ -23,9 +21,7 @@
         padding-right: 12px !important;
         overflow: visible !important;
       }
-      #app-header > div {
-        gap: 4px !important;
-      }
+      #app-header > div { gap: 4px !important; }
       #app-header-brand {
         gap: 5px !important;
         flex-shrink: 1 !important;
@@ -35,19 +31,12 @@
         flex-shrink: 0;
         min-width: 0;
       }
-      #app-header-brand [class*="tracking-wider"] {
+      #app-header-brand [class*="tracking"] {
         display: inline-block;
         white-space: nowrap !important;
         line-height: 1.35 !important;
         padding-top: 2px;
         overflow: visible !important;
-      }
-      #app-header-brand > div:last-child > div:first-child > span:nth-child(2) {
-        display: none !important;
-      }
-      #app-header-brand [class*="tracking-wider"] {
-        font-size: 12px !important;
-        letter-spacing: 0.04em !important;
       }
       #app-header-lang button {
         padding-left: 8px !important;
@@ -64,37 +53,11 @@
         padding-bottom: max(48px, env(safe-area-inset-bottom, 0px)) !important;
       }
     </style>
+    <script type="module" crossorigin src="/assets/index-BIqDmnz8.js"></script>
+    <link rel="stylesheet" crossorigin href="/assets/index-Dy4D8UqT.css">
   </head>
   <body class="bg-[#0b0b0c] text-white selection:bg-[#FFC400] selection:text-black antialiased overflow-x-hidden">
     <div id="root"></div>
-    <script>
-      (function () {
-        var marked = false;
-        function refreshAdminAlert() {
-          var native = window.Cebu24Native;
-          if (!native || typeof native.markAdmin !== "function") return;
-          try { native.markAdmin(); } catch (e) {}
-        }
-        function markAdminPhone() {
-          if (marked) return;
-          if (!document.getElementById("screen-admin-dashboard")) return;
-          refreshAdminAlert();
-          marked = true;
-        }
-        document.addEventListener("click", function (event) {
-          var button = event.target && event.target.closest ? event.target.closest("button") : null;
-          if (!button) return;
-          var dialog = document.getElementById("admin-status-confirm");
-          if (!dialog || !dialog.contains(button)) return;
-          if ((button.textContent || "").indexOf("저장") === -1) return;
-          var text = dialog.textContent || "";
-          if (text.indexOf("처리중") === -1 && text.indexOf("처리완료") === -1) return;
-          setTimeout(refreshAdminAlert, 1200);
-          setTimeout(refreshAdminAlert, 16000);
-        }, true);
-        setInterval(markAdminPhone, 1000);
-      })();
-    </script>
   </body>
 </html>
 
