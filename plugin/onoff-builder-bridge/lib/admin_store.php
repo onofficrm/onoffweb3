@@ -257,3 +257,63 @@ if (!function_exists('cebu24_admin_delete')) {
         return array('ok' => true);
     }
 }
+
+if (!function_exists('cebu24_admin_change_password')) {
+    function cebu24_admin_change_password($admin_id, $current_password, $new_password)
+    {
+        $admin_id = cebu24_admin_normalize_id($admin_id);
+        $new_password = (string) $new_password;
+        if (strlen($new_password) < 6 || strlen($new_password) > 72) {
+            return array('ok' => false, 'error' => 'invalid_admin_password');
+        }
+
+        $store = cebu24_admin_load_store();
+        if (empty($store['admins'][$admin_id]) || empty($store['admins'][$admin_id]['active'])) {
+            return array('ok' => false, 'error' => 'admin_not_found');
+        }
+        $admin = $store['admins'][$admin_id];
+        if (empty($admin['passwordHash']) || !password_verify((string) $current_password, $admin['passwordHash'])) {
+            return array('ok' => false, 'error' => 'invalid_current_password');
+        }
+
+        $store['admins'][$admin_id]['passwordHash'] = password_hash($new_password, PASSWORD_DEFAULT);
+        $store['admins'][$admin_id]['passwordChangedAt'] = date('c');
+        if (!cebu24_admin_save_store($store)) {
+            return array('ok' => false, 'error' => 'save_failed');
+        }
+        return array('ok' => true);
+    }
+}
+
+if (!function_exists('cebu24_admin_reset_password')) {
+    function cebu24_admin_reset_password($target_id, $new_password, $reset_by)
+    {
+        $target_id = cebu24_admin_normalize_id($target_id);
+        $reset_by = cebu24_admin_normalize_id($reset_by);
+        $new_password = (string) $new_password;
+        if ($target_id === $reset_by) {
+            return array('ok' => false, 'error' => 'use_change_password');
+        }
+        if (strlen($new_password) < 6 || strlen($new_password) > 72) {
+            return array('ok' => false, 'error' => 'invalid_admin_password');
+        }
+
+        $store = cebu24_admin_load_store();
+        if (empty($store['admins'][$target_id]) || empty($store['admins'][$target_id]['active'])) {
+            return array('ok' => false, 'error' => 'admin_not_found');
+        }
+
+        $store['admins'][$target_id]['passwordHash'] = password_hash($new_password, PASSWORD_DEFAULT);
+        $store['admins'][$target_id]['passwordChangedAt'] = date('c');
+        $store['admins'][$target_id]['passwordChangedBy'] = $reset_by;
+        foreach ($store['sessions'] as $session_key => $session) {
+            if (isset($session['adminId']) && cebu24_admin_normalize_id($session['adminId']) === $target_id) {
+                unset($store['sessions'][$session_key]);
+            }
+        }
+        if (!cebu24_admin_save_store($store)) {
+            return array('ok' => false, 'error' => 'save_failed');
+        }
+        return array('ok' => true);
+    }
+}

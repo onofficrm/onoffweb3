@@ -53,6 +53,7 @@ $token = isset($body['token']) ? (string) $body['token'] : '';
 
 if ($action === 'admin_me' || $action === 'admin_logout' || $action === 'admin_register'
     || $action === 'admin_accounts' || $action === 'admin_delete'
+    || $action === 'admin_change_password' || $action === 'admin_reset_password'
     || $action === 'admin_list' || $action === 'admin_status') {
     $admin = cebu24_admin_from_token($token);
     if (!$admin) {
@@ -86,6 +87,24 @@ if ($action === 'admin_me' || $action === 'admin_logout' || $action === 'admin_r
         $deleted = cebu24_admin_delete($target_id, $admin['id']);
         if (empty($deleted['ok'])) {
             cebu24_api_json(false, array('error' => $deleted['error']), 400);
+        }
+        cebu24_api_json(true);
+    }
+    if ($action === 'admin_change_password') {
+        $current_password = isset($body['currentPassword']) ? (string) $body['currentPassword'] : '';
+        $new_password = isset($body['newPassword']) ? (string) $body['newPassword'] : '';
+        $changed = cebu24_admin_change_password($admin['id'], $current_password, $new_password);
+        if (empty($changed['ok'])) {
+            cebu24_api_json(false, array('error' => $changed['error']), 400);
+        }
+        cebu24_api_json(true);
+    }
+    if ($action === 'admin_reset_password') {
+        $target_id = isset($body['adminId']) ? (string) $body['adminId'] : '';
+        $new_password = isset($body['newPassword']) ? (string) $body['newPassword'] : '';
+        $reset = cebu24_admin_reset_password($target_id, $new_password, $admin['id']);
+        if (empty($reset['ok'])) {
+            cebu24_api_json(false, array('error' => $reset['error']), 400);
         }
         cebu24_api_json(true);
     }
