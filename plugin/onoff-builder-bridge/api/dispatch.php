@@ -72,7 +72,10 @@ if ($action === 'admin_me' || $action === 'admin_logout' || $action === 'admin_r
         if (empty($created['ok'])) {
             cebu24_api_json(false, array('error' => $created['error']), 400);
         }
-        cebu24_api_json(true, array('admin' => $created['admin']));
+        cebu24_api_json(true, array(
+            'admin' => $created['admin'],
+            'bootstrapReplaced' => !empty($created['bootstrapReplaced']),
+        ));
     }
     if ($action === 'admin_list') {
         cebu24_api_json(true, array('items' => cebu24_admin_list_dispatches(), 'admin' => $admin));

@@ -179,9 +179,23 @@ if (!function_exists('cebu24_admin_create')) {
             'createdAt' => date('c'),
             'createdBy' => (string) $created_by,
         );
+        $bootstrap_replaced = false;
+        if ($created_by === 'owner' && !empty($store['admins']['owner']['active'])) {
+            $store['admins']['owner']['active'] = false;
+            foreach ($store['sessions'] as $session_key => $session) {
+                if (isset($session['adminId']) && $session['adminId'] === 'owner') {
+                    unset($store['sessions'][$session_key]);
+                }
+            }
+            $bootstrap_replaced = true;
+        }
         if (!cebu24_admin_save_store($store)) {
             return array('ok' => false, 'error' => 'save_failed');
         }
-        return array('ok' => true, 'admin' => cebu24_admin_public($store['admins'][$id]));
+        return array(
+            'ok' => true,
+            'admin' => cebu24_admin_public($store['admins'][$id]),
+            'bootstrapReplaced' => $bootstrap_replaced,
+        );
     }
 }
