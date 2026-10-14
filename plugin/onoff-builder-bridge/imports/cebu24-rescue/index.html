@@ -19,7 +19,17 @@
     <style>
       header.sticky {
         padding-top: max(72px, env(safe-area-inset-top, 0px)) !important;
+        padding-left: 12px !important;
+        padding-right: 12px !important;
         overflow: visible !important;
+      }
+      #app-header > div {
+        gap: 4px !important;
+      }
+      #app-header-brand {
+        gap: 5px !important;
+        flex-shrink: 1 !important;
+        min-width: 0;
       }
       #app-header-brand > div:last-child {
         flex-shrink: 0;
@@ -32,14 +42,22 @@
         padding-top: 2px;
         overflow: visible !important;
       }
-      @media (max-width: 359px) {
-        #app-header-brand > div:last-child > div:first-child > span:nth-child(2) {
-          display: none !important;
-        }
-        #app-header-brand [class*="tracking-wider"] {
-          font-size: 12px !important;
-          letter-spacing: 0.04em !important;
-        }
+      #app-header-brand > div:last-child > div:first-child > span:nth-child(2) {
+        display: none !important;
+      }
+      #app-header-brand [class*="tracking-wider"] {
+        font-size: 12px !important;
+        letter-spacing: 0.04em !important;
+      }
+      #app-header-lang button {
+        padding-left: 8px !important;
+        padding-right: 8px !important;
+      }
+      #header-admin-btn {
+        min-width: 36px;
+        padding-left: 6px !important;
+        padding-right: 6px !important;
+        flex-shrink: 0 !important;
       }
       nav.fixed.bottom-0,
       .safe-bottom {
