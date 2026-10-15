@@ -11,6 +11,7 @@ include_once dirname(__FILE__) . '/../_common.php';
 include_once dirname(__FILE__) . '/../bootstrap.php';
 include_once dirname(__FILE__) . '/../lib/dispatch_store.php';
 include_once dirname(__FILE__) . '/../lib/admin_store.php';
+include_once dirname(__FILE__) . '/../lib/apns.php';
 
 function cebu24_api_json($ok, $payload = array(), $http = 200)
 {
@@ -23,10 +24,19 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     cebu24_api_json(false, array('error' => 'method_not_allowed'), 405);
 }
 
-$raw = file_get_contents('php://input');
-$body = $raw ? json_decode($raw, true) : null;
-if (!is_array($body)) {
-    cebu24_api_json(false, array('error' => 'invalid_json'), 400);
+$content_type = isset($_SERVER['CONTENT_TYPE']) ? strtolower((string) $_SERVER['CONTENT_TYPE']) : '';
+$is_multipart = strpos($content_type, 'multipart/form-data') !== false;
+if ($is_multipart) {
+    $body = $_POST;
+    if (empty($body) && !empty($_SERVER['CONTENT_LENGTH'])) {
+        cebu24_api_json(false, array('error' => 'upload_request_too_large'), 413);
+    }
+} else {
+    $raw = file_get_contents('php://input');
+    $body = $raw ? json_decode($raw, true) : null;
+    if (!is_array($body)) {
+        cebu24_api_json(false, array('error' => 'invalid_json'), 400);
+    }
 }
 
 $action = isset($body['action']) ? (string) $body['action'] : '';
@@ -54,10 +64,26 @@ $token = isset($body['token']) ? (string) $body['token'] : '';
 if ($action === 'admin_me' || $action === 'admin_logout' || $action === 'admin_register'
     || $action === 'admin_accounts' || $action === 'admin_delete'
     || $action === 'admin_change_password' || $action === 'admin_reset_password'
-    || $action === 'admin_list' || $action === 'admin_status') {
+    || $action === 'admin_list' || $action === 'admin_status'
+    || $action === 'apns_register' || $action === 'apns_unregister') {
     $admin = cebu24_admin_from_token($token);
     if (!$admin) {
         cebu24_api_json(false, array('error' => 'admin_session_required'), 401);
+    }
+    if ($action === 'apns_register' || $action === 'apns_unregister') {
+        $device_token = isset($body['deviceToken']) ? (string) $body['deviceToken'] : '';
+        if ($action === 'apns_unregister') {
+            if (!cebu24_apns_unregister_device($device_token)) {
+                cebu24_api_json(false, array('error' => 'invalid_device_token'), 400);
+            }
+            cebu24_api_json(true);
+        }
+        $environment = isset($body['environment']) ? (string) $body['environment'] : 'production';
+        $bundle_id = isset($body['bundleId']) ? (string) $body['bundleId'] : '';
+        if (!cebu24_apns_register_device($device_token, $environment, $bundle_id, $admin['id'])) {
+            cebu24_api_json(false, array('error' => 'invalid_device'), 400);
+        }
+        cebu24_api_json(true);
     }
     if ($action === 'admin_me') {
         cebu24_api_json(true, array('admin' => $admin));
@@ -141,8 +167,12 @@ if (!cebu24_rate_limit_ok('phone:' . $phone, 25, 600)) {
     cebu24_api_json(false, array('error' => 'rate_limited'), 429);
 }
 
-if ($action === 'save') {
-    $item = isset($body['item']) && is_array($body['item']) ? cebu24_sanitize_dispatch_item($body['item']) : null;
+if ($action === 'save' || $action === 'save_with_photos') {
+    $raw_item = isset($body['item']) ? $body['item'] : null;
+    if (is_string($raw_item)) {
+        $raw_item = json_decode($raw_item, true);
+    }
+    $item = is_array($raw_item) ? cebu24_sanitize_dispatch_item($raw_item) : null;
     if (!$item || empty($item['id'])) {
         cebu24_api_json(false, array('error' => 'invalid_item'), 400);
     }
@@ -172,21 +202,58 @@ if ($action === 'save') {
         $bucket['pin_hash'] = password_hash($pin, PASSWORD_DEFAULT);
     }
 
+    $new_photos = array();
+    if ($action === 'save_with_photos') {
+        $upload = cebu24_photo_store_uploads('photos');
+        if (empty($upload['ok'])) {
+            cebu24_api_json(false, array('error' => $upload['error']), 400);
+        }
+        $new_photos = isset($upload['photos']) && is_array($upload['photos']) ? $upload['photos'] : array();
+    }
+    $item['photos'] = $new_photos;
+
     $items = isset($bucket['items']) && is_array($bucket['items']) ? $bucket['items'] : array();
     $next = array($item);
+    $is_new = true;
+    $old_photos = array();
     foreach ($items as $old) {
-        if (!is_array($old) || !isset($old['id']) || $old['id'] === $item['id']) {
+        if (!is_array($old) || !isset($old['id'])) {
+            continue;
+        }
+        if ($old['id'] === $item['id']) {
+            $is_new = false;
+            $old_photos = isset($old['photos']) && is_array($old['photos']) ? $old['photos'] : array();
             continue;
         }
         $next[] = $old;
+    }
+    $dropped_photos = array();
+    foreach (array_slice($next, 30) as $dropped) {
+        if (is_array($dropped) && !empty($dropped['photos']) && is_array($dropped['photos'])) {
+            $dropped_photos = array_merge($dropped_photos, $dropped['photos']);
+        }
     }
     $bucket['items'] = array_slice($next, 0, 30);
     $bucket['updated_at'] = date('c');
 
     if (!cebu24_save_phone_bucket($phone, $bucket)) {
+        cebu24_photo_delete_many($new_photos);
         cebu24_api_json(false, array('error' => 'save_failed'), 500);
     }
-    cebu24_api_json(true, array('id' => $item['id'], 'count' => count($bucket['items'])));
+    if (!empty($old_photos)) {
+        cebu24_photo_delete_many(array_values(array_diff($old_photos, $new_photos)));
+    }
+    if (!empty($dropped_photos)) {
+        cebu24_photo_delete_many($dropped_photos);
+    }
+    if ($is_new) {
+        cebu24_apns_notify_new_dispatch($item);
+    }
+    cebu24_api_json(true, array(
+        'id' => $item['id'],
+        'count' => count($bucket['items']),
+        'photos' => $new_photos,
+    ));
 }
 
 if ($action === 'lookup') {
@@ -198,7 +265,14 @@ if ($action === 'lookup') {
         cebu24_api_json(false, array('error' => 'pin_mismatch'), 403);
     }
     $items = isset($bucket['items']) && is_array($bucket['items']) ? $bucket['items'] : array();
-    cebu24_api_json(true, array('items' => $items, 'phone' => $phone));
+    $safe_items = array();
+    foreach ($items as $item) {
+        $clean = cebu24_sanitize_dispatch_item($item);
+        if ($clean) {
+            $safe_items[] = $clean;
+        }
+    }
+    cebu24_api_json(true, array('items' => $safe_items, 'phone' => $phone));
 }
 
 cebu24_api_json(false, array('error' => 'unknown_action'), 400);
