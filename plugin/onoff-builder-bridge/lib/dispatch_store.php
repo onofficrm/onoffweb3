@@ -62,7 +62,37 @@ if (!function_exists('cebu24_load_phone_bucket')) {
             return null;
         }
         $data = json_decode($raw, true);
-        return is_array($data) ? $data : null;
+        if (!is_array($data)) {
+            return null;
+        }
+
+        $items = isset($data['items']) && is_array($data['items']) ? $data['items'] : array();
+        $kept = array();
+        $expired_photos = array();
+        $cutoff_ms = (time() - 365 * 86400) * 1000;
+        foreach ($items as $item) {
+            $created_ms = is_array($item) && isset($item['createdAtMs']) ? (int) $item['createdAtMs'] : 0;
+            if ($created_ms <= 0 && is_array($item) && !empty($item['savedAt'])) {
+                $saved_time = strtotime((string) $item['savedAt']);
+                $created_ms = $saved_time ? $saved_time * 1000 : 0;
+            }
+            if ($created_ms > 0 && $created_ms < $cutoff_ms) {
+                if (!empty($item['photos']) && is_array($item['photos'])) {
+                    $expired_photos = array_merge($expired_photos, $item['photos']);
+                }
+                continue;
+            }
+            $kept[] = $item;
+        }
+        if (count($kept) !== count($items)) {
+            $data['items'] = $kept;
+            $data['updated_at'] = date('c');
+            $json = json_encode($data, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+            if ($json !== false && @file_put_contents($path, $json, LOCK_EX) !== false) {
+                cebu24_photo_delete_many($expired_photos);
+            }
+        }
+        return $data;
     }
 }
 
@@ -305,6 +335,12 @@ if (!function_exists('cebu24_list_public_dispatches')) {
             }
             $raw = @file_get_contents($file);
             $data = $raw ? json_decode($raw, true) : null;
+            if (is_array($data) && !empty($data['phone'])) {
+                $fresh = cebu24_load_phone_bucket(cebu24_normalize_phone($data['phone']));
+                if (is_array($fresh)) {
+                    $data = $fresh;
+                }
+            }
             if (!is_array($data) || empty($data['items']) || !is_array($data['items'])) {
                 continue;
             }
@@ -365,6 +401,12 @@ if (!function_exists('cebu24_admin_list_dispatches')) {
             }
             $raw = @file_get_contents($file);
             $data = $raw ? json_decode($raw, true) : null;
+            if (is_array($data) && !empty($data['phone'])) {
+                $fresh = cebu24_load_phone_bucket(cebu24_normalize_phone($data['phone']));
+                if (is_array($fresh)) {
+                    $data = $fresh;
+                }
+            }
             if (!is_array($data) || empty($data['items']) || !is_array($data['items'])) {
                 continue;
             }
@@ -403,6 +445,12 @@ if (!function_exists('cebu24_admin_set_status')) {
             }
             $raw = @file_get_contents($file);
             $data = $raw ? json_decode($raw, true) : null;
+            if (is_array($data) && !empty($data['phone'])) {
+                $fresh = cebu24_load_phone_bucket(cebu24_normalize_phone($data['phone']));
+                if (is_array($fresh)) {
+                    $data = $fresh;
+                }
+            }
             if (!is_array($data) || empty($data['items']) || !is_array($data['items'])) {
                 continue;
             }
@@ -460,6 +508,12 @@ if (!function_exists('cebu24_each_dispatch_item')) {
             }
             $raw = @file_get_contents($file);
             $data = $raw ? json_decode($raw, true) : null;
+            if (is_array($data) && !empty($data['phone'])) {
+                $fresh = cebu24_load_phone_bucket(cebu24_normalize_phone($data['phone']));
+                if (is_array($fresh)) {
+                    $data = $fresh;
+                }
+            }
             if (!is_array($data) || empty($data['items']) || !is_array($data['items'])) {
                 continue;
             }
