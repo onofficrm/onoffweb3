@@ -1,0 +1,14 @@
+.DS_Store
+*.xcuserstate
+xcuserdata/
+DerivedData/
+ios/Cebu24Rescue.xcodeproj/
+android/.gradle/
+android/build/
+android/app/build/
+android/local.properties
+android/keystore.properties
+android/upload-keystore.jks
+android/KEYSTORE-KEEP.txt
+*.aab
+*.apk

@@ -1,0 +1,32 @@
+name: Cebu24Rescue
+options:
+  bundleIdPrefix: net.iwinv
+  deploymentTarget:
+    iOS: "15.0"
+  xcodeVersion: "16.0"
+
+settings:
+  base:
+    SWIFT_VERSION: "5.0"
+
+targets:
+  Cebu24Rescue:
+    type: application
+    platform: iOS
+    sources:
+      - path: Cebu24Rescue
+        excludes:
+          - Info.plist
+    info:
+      path: Cebu24Rescue/Info.plist
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: net.iwinv.cebu24rescue
+        PRODUCT_NAME: Cebu24Rescue
+        MARKETING_VERSION: "1.0.0"
+        CURRENT_PROJECT_VERSION: "1"
+        CODE_SIGN_STYLE: Automatic
+        ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
+        TARGETED_DEVICE_FAMILY: "1,2"
+    scheme:
+      testTargets: []

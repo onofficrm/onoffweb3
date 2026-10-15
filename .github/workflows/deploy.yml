@@ -31,6 +31,7 @@ jobs:
             **/.github/**
             **/.DS_Store
             **/.vscode/**
+            mobile-app/**
             _backup_transfer_*/
             **/_backup_transfer_*/
             _BUILDER_INPUT/**

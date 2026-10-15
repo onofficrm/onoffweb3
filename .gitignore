@@ -27,3 +27,17 @@ node_modules/
 .vscode/
 *.swp
 *.swo
+
+# 모바일 앱 빌드·로컬 설정·Android 배포 서명 비밀
+mobile-app/android/.gradle/
+mobile-app/android/build/
+mobile-app/android/app/build/
+mobile-app/android/local.properties
+mobile-app/android/keystore.properties
+mobile-app/android/upload-keystore.jks
+mobile-app/android/KEYSTORE-KEEP.txt
+mobile-app/ios/DerivedData/
+mobile-app/ios/**/xcuserdata/
+mobile-app/**/*.xcuserstate
+mobile-app/**/*.aab
+mobile-app/**/*.apk
