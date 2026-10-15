@@ -8,6 +8,8 @@
 - 모바일 앱 프로젝트: `긴급출동 세부24/mobile-app`
 - 서비스 주소: `https://onoffweb3.iwinv.net/`
 
+`mobile-app`이 Android와 iOS 앱의 유일한 원본 폴더입니다. 예전에 사용하던 별도 Android 폴더에서는 더 이상 작업하지 않습니다.
+
 ## Mac에서 네트워크로 열기
 
 1. Windows에서 `긴급출동 세부24` 폴더를 네트워크 공유합니다.
@@ -22,6 +24,8 @@ Android 배포 서명에 필요한 다음 파일도 폴더 안에 포함되어 �
 
 두 파일은 비밀 파일입니다. GitHub, 메일, 공개 드라이브에 올리지 마세요. Windows와 Mac에서 같은 파일을 동시에 수정하지 마세요.
 
+네트워크 폴더이므로 Windows와 Mac에서 같은 소스 파일을 동시에 저장하면 마지막 저장 내용으로 덮어씌워질 수 있습니다. 웹 파일은 Windows에서, `mobile-app` 파일은 Mac에서 수정하는 원칙을 지키세요.
+
 ## Android 앱 열기
 
 1. Mac에 Android Studio를 설치합니다.
@@ -29,6 +33,13 @@ Android 배포 서명에 필요한 다음 파일도 폴더 안에 포함되어 �
 3. Gradle 동기화가 끝날 때까지 기다립니다.
 4. JDK는 17을 선택합니다.
 5. 테스트 실행 또는 `Build > Generate Signed Bundle / APK`로 배포 파일을 만듭니다.
+
+Mac 터미널에서 직접 빌드할 때 네트워크 드라이브의 실행 권한 문제로 `./gradlew`가 실행되지 않으면 다음처럼 실행합니다.
+
+```bash
+cd "/Volumes/공유이름/긴급출동 세부24/mobile-app/android"
+sh ./gradlew bundleRelease
+```
 
 현재 Android 버전은 `android/app/build.gradle`에서 관리합니다.
 
