@@ -3,9 +3,9 @@
  * CEBU 24 dispatch API — save / lookup by phone + 4-digit PIN
  * POST JSON: { action: "save"|"lookup", phone, pin, item? }
  */
-header('Content-Type: application/json; charset=utf-8');
-header('X-Content-Type-Options: nosniff');
-header('Cache-Control: no-store');
+@ini_set('display_errors', '0');
+@ini_set('html_errors', '0');
+ob_start();
 
 include_once dirname(__FILE__) . '/../_common.php';
 include_once dirname(__FILE__) . '/../bootstrap.php';
@@ -13,10 +13,31 @@ include_once dirname(__FILE__) . '/../lib/dispatch_store.php';
 include_once dirname(__FILE__) . '/../lib/admin_store.php';
 include_once dirname(__FILE__) . '/../lib/apns.php';
 
+set_error_handler(function ($severity, $message, $file, $line) {
+    error_log('CEBU24 dispatch PHP error: ' . $message . ' in ' . $file . ':' . $line);
+    return true;
+});
+
 function cebu24_api_json($ok, $payload = array(), $http = 200)
 {
-    http_response_code($http);
-    echo json_encode(array_merge(array('ok' => $ok), $payload), JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+    while (ob_get_level() > 0) {
+        @ob_end_clean();
+    }
+    $json = json_encode(array_merge(array('ok' => $ok), $payload), JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+    if ($json === false) {
+        $json = '{"ok":false,"error":"json_encode_failed"}';
+        $http = 500;
+    }
+    if (!headers_sent()) {
+        header_remove('Content-Type');
+        header('Content-Type: application/json; charset=utf-8');
+        header('X-Content-Type-Options: nosniff');
+        header('Cache-Control: no-store');
+        http_response_code($http);
+    } else {
+        error_log('CEBU24 dispatch headers already sent before JSON response');
+    }
+    echo $json;
     exit;
 }
 
@@ -202,27 +223,39 @@ if ($action === 'save' || $action === 'save_with_photos') {
         $bucket['pin_hash'] = password_hash($pin, PASSWORD_DEFAULT);
     }
 
-    $new_photos = array();
+    $uploaded_now = array();
     if ($action === 'save_with_photos') {
         $upload = cebu24_photo_store_uploads('photos');
         if (empty($upload['ok'])) {
             cebu24_api_json(false, array('error' => $upload['error']), 400);
         }
-        $new_photos = isset($upload['photos']) && is_array($upload['photos']) ? $upload['photos'] : array();
+        $uploaded_now = isset($upload['photos']) && is_array($upload['photos']) ? $upload['photos'] : array();
     }
-    $item['photos'] = $new_photos;
+    $new_photos = $uploaded_now;
 
     $items = isset($bucket['items']) && is_array($bucket['items']) ? $bucket['items'] : array();
-    $next = array($item);
     $is_new = true;
     $old_photos = array();
     foreach ($items as $old) {
         if (!is_array($old) || !isset($old['id'])) {
             continue;
         }
-        if ($old['id'] === $item['id']) {
+        if ((string) $old['id'] === (string) $item['id']) {
             $is_new = false;
             $old_photos = isset($old['photos']) && is_array($old['photos']) ? $old['photos'] : array();
+            break;
+        }
+    }
+    // Same receipt ID is updated in place. An empty retry keeps the photos already stored.
+    if (!$is_new && empty($new_photos) && !empty($old_photos)) {
+        $new_photos = $old_photos;
+        $old_photos = array();
+    }
+    $item['photos'] = $new_photos;
+
+    $next = array($item);
+    foreach ($items as $old) {
+        if (!is_array($old) || !isset($old['id']) || (string) $old['id'] === (string) $item['id']) {
             continue;
         }
         $next[] = $old;
@@ -237,7 +270,7 @@ if ($action === 'save' || $action === 'save_with_photos') {
     $bucket['updated_at'] = date('c');
 
     if (!cebu24_save_phone_bucket($phone, $bucket)) {
-        cebu24_photo_delete_many($new_photos);
+        cebu24_photo_delete_many($uploaded_now);
         cebu24_api_json(false, array('error' => 'save_failed'), 500);
     }
     if (!empty($old_photos)) {
@@ -247,12 +280,18 @@ if ($action === 'save' || $action === 'save_with_photos') {
         cebu24_photo_delete_many($dropped_photos);
     }
     if ($is_new) {
-        cebu24_apns_notify_new_dispatch($item);
+        try {
+            cebu24_apns_notify_new_dispatch($item);
+        } catch (Throwable $e) {
+            error_log('CEBU24 APNs notify failed: ' . $e->getMessage());
+        }
     }
+    $public_item = cebu24_sanitize_dispatch_item($item, true);
     cebu24_api_json(true, array(
         'id' => $item['id'],
         'count' => count($bucket['items']),
         'photos' => $new_photos,
+        'item' => $public_item ? $public_item : array('id' => $item['id'], 'photos' => $new_photos),
     ));
 }
 
