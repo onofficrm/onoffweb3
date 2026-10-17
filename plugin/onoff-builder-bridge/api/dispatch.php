@@ -63,7 +63,18 @@ if ($is_multipart) {
 $action = isset($body['action']) ? (string) $body['action'] : '';
 
 $ip = isset($_SERVER['REMOTE_ADDR']) ? $_SERVER['REMOTE_ADDR'] : 'unknown';
-if (!cebu24_rate_limit_ok('ip:' . $ip, 40, 600)) {
+// Many customers share one carrier IP, and admin screens poll the list every 30 seconds,
+// so read traffic must never consume the budget that customer submissions depend on.
+$rate_bucket = 'customer';
+$rate_max = 120;
+if ($action === 'list') {
+    $rate_bucket = 'list';
+    $rate_max = 600;
+} elseif (strpos($action, 'admin_') === 0 || strpos($action, 'apns_') === 0) {
+    $rate_bucket = 'admin';
+    $rate_max = 600;
+}
+if (!cebu24_rate_limit_ok('ip-' . $rate_bucket . ':' . $ip, $rate_max, 600)) {
     cebu24_api_json(false, array('error' => 'rate_limited'), 429);
 }
 
@@ -184,7 +195,7 @@ if (strlen($pin) !== 4) {
     cebu24_api_json(false, array('error' => 'invalid_pin'), 400);
 }
 
-if (!cebu24_rate_limit_ok('phone:' . $phone, 25, 600)) {
+if (!cebu24_rate_limit_ok('phone:' . $phone, 40, 600)) {
     cebu24_api_json(false, array('error' => 'rate_limited'), 429);
 }
 
