@@ -201,8 +201,15 @@ if (!cebu24_rate_limit_ok('phone:' . $phone, 40, 600)) {
 
 if ($action === 'save' || $action === 'save_with_photos') {
     $raw_item = isset($body['item']) ? $body['item'] : null;
+    // Gnuboard applies addslashes() to every $_POST value. Multipart item JSON
+    // therefore arrives escaped ({\"id\":...}) and json_decode() fails unless
+    // we stripslashes first. JSON request bodies use php://input and are fine.
     if (is_string($raw_item)) {
-        $raw_item = json_decode($raw_item, true);
+        $decoded = json_decode($raw_item, true);
+        if (!is_array($decoded)) {
+            $decoded = json_decode(stripslashes($raw_item), true);
+        }
+        $raw_item = $decoded;
     }
     $item = is_array($raw_item) ? cebu24_sanitize_dispatch_item($raw_item) : null;
     if (!$item || empty($item['id'])) {
