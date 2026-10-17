@@ -23,6 +23,7 @@ import {
   isCallablePhone,
   isOnsiteLookupCode,
   isKoreanPhone,
+  normalizePhone,
 } from '../lib/dispatchApi';
 
 export const RequestInformationScreen: React.FC = () => {
@@ -43,6 +44,8 @@ export const RequestInformationScreen: React.FC = () => {
     setMessengerType,
     messengerId,
     setMessengerId,
+    contactMode,
+    setContactMode,
     viewPin,
     setViewPin,
     locationAddress,
@@ -57,9 +60,6 @@ export const RequestInformationScreen: React.FC = () => {
   const [showVehicleDetails, setShowVehicleDetails] = useState(false);
   const [phoneError, setPhoneError] = useState(false);
   const [pinError, setPinError] = useState(false);
-  const [phoneCountry, setPhoneCountry] = useState<'ph' | 'kr' | 'onsite'>(
-    isOnsiteLookupCode(contactPhone) ? 'onsite' : isKoreanPhone(contactPhone) ? 'kr' : 'ph'
-  );
 
   const service = selectedService || SERVICES_DATA[0];
 
@@ -107,19 +107,23 @@ export const RequestInformationScreen: React.FC = () => {
   const conditionOptions = getConditionOptions();
 
   const handlePhoneChange = (val: string) => {
-    const country = phoneCountry === 'kr' ? 'kr' : 'ph';
-    setContactPhone(formatPhoneInput(val, country));
+    const digits = normalizePhone(val);
+    let country: 'ph' | 'kr' = contactMode === 'kr' ? 'kr' : 'ph';
+    if (/^010\d{8}$/.test(digits)) country = 'kr';
+    else if (/^09\d{9}$/.test(digits)) country = 'ph';
+    if (country !== contactMode) setContactMode(country);
+    setContactPhone(formatPhoneInput(digits, country));
     setPhoneError(false);
   };
 
   const selectCountry = (country: 'ph' | 'kr') => {
-    setPhoneCountry(country);
+    setContactMode(country);
     setContactPhone(formatPhoneInput(contactPhone, country));
     setPhoneError(false);
   };
 
   const enableOnsiteWait = () => {
-    setPhoneCountry('onsite');
+    setContactMode('onsite');
     if (!isOnsiteLookupCode(contactPhone)) {
       setContactPhone(createOnsiteLookupCode());
     }
@@ -128,10 +132,10 @@ export const RequestInformationScreen: React.FC = () => {
   };
 
   const isPhoneValid =
-    phoneCountry === 'onsite' ? isOnsiteLookupCode(contactPhone) : isCallablePhone(contactPhone);
+    contactMode === 'onsite' ? isOnsiteLookupCode(contactPhone) : isCallablePhone(contactPhone);
 
   const handleSubmit = () => {
-    if (phoneCountry === 'onsite') {
+    if (contactMode === 'onsite') {
       if (landmark.trim().length < 4 || plateNumber.trim().length < 4) {
         setPhoneError(true);
         setShowVehicleDetails(true);
@@ -142,14 +146,14 @@ export const RequestInformationScreen: React.FC = () => {
         );
         return;
       }
-    } else if (!isCallablePhone(contactPhone) || (phoneCountry === 'kr' && !isKoreanPhone(contactPhone)) || (phoneCountry === 'ph' && isKoreanPhone(contactPhone))) {
+    } else if (!isCallablePhone(contactPhone) || (contactMode === 'kr' && !isKoreanPhone(contactPhone)) || (contactMode === 'ph' && isKoreanPhone(contactPhone))) {
       setPhoneError(true);
       showToast(
         lang === 'ko'
-          ? phoneCountry === 'kr'
+          ? contactMode === 'kr'
             ? '⚠️ 한국 번호는 010으로 시작하는 11자리를 입력해 주세요.'
             : '⚠️ 필리핀 번호는 09로 시작하는 11자리를 입력해 주세요.'
-          : phoneCountry === 'kr'
+          : contactMode === 'kr'
             ? '⚠️ Enter an 11-digit Korean number starting with 010.'
             : '⚠️ Enter an 11-digit Philippine number starting with 09.'
       );
@@ -351,7 +355,7 @@ export const RequestInformationScreen: React.FC = () => {
               type="button"
               onClick={() => (id === 'onsite' ? enableOnsiteWait() : selectCountry(id))}
               className={`min-h-[36px] rounded-xl border text-[11px] font-black ${
-                phoneCountry === id
+                contactMode === id
                   ? 'bg-[#FFC400] text-black border-[#FFC400]'
                   : 'bg-[#111111] text-[#D1D5DB] border-[#3a3a3c]'
               }`}
@@ -361,7 +365,7 @@ export const RequestInformationScreen: React.FC = () => {
           ))}
         </div>
 
-        {phoneCountry === 'onsite' ? (
+        {contactMode === 'onsite' ? (
           <div className="mt-3 rounded-xl border border-[#FFC400]/40 bg-[#FFC400]/10 px-3 py-2.5">
             <p className="text-xs font-black text-[#FFC400]">
               {lang === 'ko' ? '현장 대기' : 'Wait on site'}
@@ -376,16 +380,18 @@ export const RequestInformationScreen: React.FC = () => {
         ) : (
           <div className="relative flex items-center mt-2">
             <div className="absolute left-3.5 flex items-center gap-1.5 text-xs font-bold text-white pointer-events-none">
-              <span className="text-sm">{phoneCountry === 'kr' ? '🇰🇷' : '🇵🇭'}</span>
-              <span className="text-[#A7A7A7] font-mono">{phoneCountry === 'kr' ? '+82' : '+63'}</span>
+              <span className="text-sm">{contactMode === 'kr' ? '🇰🇷' : '🇵🇭'}</span>
+              <span className="text-[#A7A7A7] font-mono">{contactMode === 'kr' ? '+82' : '+63'}</span>
             </div>
             <input
               id="contact-phone-input"
               type="tel"
+              name="tel"
+              autoComplete="tel"
               inputMode="numeric"
               value={contactPhone}
               onChange={(e) => handlePhoneChange(e.target.value)}
-              placeholder={phoneCountry === 'kr' ? '010-XXXX-XXXX' : '09XX XXX XXXX'}
+              placeholder={contactMode === 'kr' ? '010-XXXX-XXXX' : '09XX XXX XXXX'}
               className={`w-full bg-[#111111] border rounded-xl pl-20 pr-10 py-3 text-sm font-bold font-mono tracking-wider text-white placeholder:text-[#555] focus:border-[#FFC400] focus:ring-1 focus:ring-[#FFC400] outline-none transition-all ${
                 phoneError ? 'border-[#E53935]' : 'border-[#3a3a3c]'
               }`}
@@ -401,14 +407,16 @@ export const RequestInformationScreen: React.FC = () => {
         <p className="text-[11px] text-[#A7A7A7] mt-2.5 leading-relaxed flex items-start gap-1.5">
           <Sparkles className="w-3.5 h-3.5 text-[#FFC400] shrink-0 mt-0.5" />
           <span>
-            {phoneCountry === 'onsite'
+            {contactMode === 'onsite'
               ? lang === 'ko'
-                ? '본인 번호가 없으면 동행자, 호텔, 렌터카 번호를 필리핀 또는 한국 번호로 입력하는 것이 더 안전합니다.'
-                : 'A companion, hotel, or rental-desk number is safer than waiting with no call.'
-              : t.phoneHelper}
+                ? '본인 번호가 없으면 동행자, 호텔, 렌터카 번호가 더 안전합니다. 메신저 아이디는 이 기기에 저장되어 다음에 미리 채워집니다.'
+                : 'A companion, hotel, or rental number is safer. The messenger ID is saved on this device and can be edited next time.'
+              : lang === 'ko'
+                ? `${t.phoneHelper} 이 기기에 저장되어 다음 접수 때 미리 채워집니다. 틀리면 고쳐 주세요.`
+                : `${t.phoneHelper} Saved on this device and filled in next time. Edit it if it is wrong.`}
           </span>
         </p>
-        {phoneCountry === 'onsite' && (
+        {contactMode === 'onsite' && (
           <div className="mt-3 space-y-2.5">
             <div>
               <label className="text-[11px] font-semibold text-[#A7A7A7] mb-1 block">

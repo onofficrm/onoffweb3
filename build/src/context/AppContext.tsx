@@ -15,8 +15,10 @@ import {
   DEFAULT_VIEW_PIN,
   getLatestOpenDispatch,
   isPinUnlocked,
+  loadContactProfile,
   loadDispatchHistory,
   loadSavedViewPin,
+  saveContactProfile,
   saveDispatchHistory,
   saveViewPinLocal,
   setPinUnlocked,
@@ -25,8 +27,12 @@ import {
   wipeDeviceLocalData,
 } from '../lib/dispatchStorage';
 import {
+  createOnsiteLookupCode,
+  isCallablePhone,
   isDispatchPhone,
+  isKoreanPhone,
   isOnsiteLookupCode,
+  isPhilippinePhone,
   lookupDispatchRemote,
   normalizePhone,
   saveDispatchRemote,
@@ -93,6 +99,8 @@ interface AppContextType {
   setMessengerType: (type: '' | 'kakao' | 'facebook') => void;
   messengerId: string;
   setMessengerId: (id: string) => void;
+  contactMode: 'ph' | 'kr' | 'onsite';
+  setContactMode: (mode: 'ph' | 'kr' | 'onsite') => void;
   issueNotes: string;
   setIssueNotes: (notes: string) => void;
   uploadedPhotos: UploadedPhoto[];
@@ -168,9 +176,24 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   const [selectedVehicleType, setSelectedVehicleType] = useState<VehicleTypeId>('sedan');
   const [vehicleModelName, setVehicleModelName] = useState<string>('');
   const [plateNumber, setPlateNumber] = useState<string>('');
-  const [contactPhone, setContactPhone] = useState<string>('');
-  const [messengerType, setMessengerType] = useState<'' | 'kakao' | 'facebook'>('');
-  const [messengerId, setMessengerId] = useState<string>('');
+  const [contactPhone, setContactPhone] = useState<string>(() => {
+    if (typeof window === 'undefined') return '';
+    const profile = loadContactProfile();
+    return profile.mode === 'onsite' ? '' : profile.phone;
+  });
+  const [messengerType, setMessengerType] = useState<'' | 'kakao' | 'facebook'>(() => {
+    if (typeof window === 'undefined') return '';
+    const profile = loadContactProfile();
+    return profile.mode === 'onsite' ? profile.messengerType : '';
+  });
+  const [messengerId, setMessengerId] = useState<string>(() => {
+    if (typeof window === 'undefined') return '';
+    const profile = loadContactProfile();
+    return profile.mode === 'onsite' ? profile.messengerId : '';
+  });
+  const [contactMode, setContactMode] = useState<'ph' | 'kr' | 'onsite'>(() =>
+    typeof window === 'undefined' ? 'ph' : loadContactProfile().mode
+  );
   const [viewPin, setViewPinState] = useState<string>(() =>
     typeof window !== 'undefined' ? loadSavedViewPin() : DEFAULT_VIEW_PIN
   );
@@ -265,7 +288,12 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
 
   useEffect(() => {
     const saved = getLatestOpenDispatch(loadDispatchHistory());
-    if (!saved) return;
+    if (!saved) {
+      if (contactMode === 'onsite' && !isOnsiteLookupCode(contactPhone)) {
+        setContactPhone(createOnsiteLookupCode());
+      }
+      return;
+    }
     if (saved.locationAddress) setLocationAddress(saved.locationAddress);
     if (saved.locationDetails) setLocationDetails(saved.locationDetails);
     if (saved.landmark) setLandmark(saved.landmark);
@@ -274,7 +302,16 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     if (saved.vehicleType) setSelectedVehicleType(saved.vehicleType);
     if (saved.vehicleModelName) setVehicleModelName(saved.vehicleModelName);
     if (saved.plateNumber) setPlateNumber(saved.plateNumber);
-    if (saved.contactPhone) setContactPhone(saved.contactPhone);
+    if (saved.contactPhone) {
+      setContactPhone(saved.contactPhone);
+      if (isOnsiteLookupCode(saved.contactPhone)) setContactMode('onsite');
+      else if (isKoreanPhone(saved.contactPhone)) setContactMode('kr');
+      else if (isPhilippinePhone(saved.contactPhone)) setContactMode('ph');
+    }
+    if (saved.messengerType === 'kakao' || saved.messengerType === 'facebook') {
+      setMessengerType(saved.messengerType);
+    }
+    if (saved.messengerId) setMessengerId(saved.messengerId);
     if (saved.notes) setIssueNotes(saved.notes);
     if (saved.paymentMethod) setPaymentMethod(saved.paymentMethod);
     if (saved.serviceId) {
@@ -286,6 +323,16 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   useEffect(() => {
     saveDispatchHistory(dispatchHistory);
   }, [dispatchHistory]);
+
+  useEffect(() => {
+    const phone = contactMode === 'onsite' || isOnsiteLookupCode(contactPhone) ? '' : contactPhone;
+    saveContactProfile({
+      mode: contactMode,
+      phone,
+      messengerType: contactMode === 'onsite' ? messengerType : '',
+      messengerId: contactMode === 'onsite' ? messengerId.trim().slice(0, 80) : '',
+    });
+  }, [contactMode, contactPhone, messengerType, messengerId]);
 
   useEffect(() => {
     if (toastMessage) {
@@ -350,7 +397,11 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     setServiceCondition('');
     setVehicleModelName('');
     setPlateNumber('');
-    setContactPhone('');
+    const profile = loadContactProfile();
+    setContactMode(profile.mode);
+    setMessengerType(profile.mode === 'onsite' ? profile.messengerType : '');
+    setMessengerId(profile.mode === 'onsite' ? profile.messengerId : '');
+    setContactPhone(profile.mode === 'onsite' ? createOnsiteLookupCode() : profile.phone);
     setIssueNotes('');
     releaseUploadedPhotos(uploadedPhotos);
     setUploadedPhotos([]);
@@ -834,6 +885,8 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         setMessengerType,
         messengerId,
         setMessengerId,
+        contactMode,
+        setContactMode,
         issueNotes,
         setIssueNotes,
         uploadedPhotos,
