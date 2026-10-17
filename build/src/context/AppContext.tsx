@@ -89,6 +89,10 @@ interface AppContextType {
   setPlateNumber: (plate: string) => void;
   contactPhone: string;
   setContactPhone: (phone: string) => void;
+  messengerType: '' | 'kakao' | 'facebook';
+  setMessengerType: (type: '' | 'kakao' | 'facebook') => void;
+  messengerId: string;
+  setMessengerId: (id: string) => void;
   issueNotes: string;
   setIssueNotes: (notes: string) => void;
   uploadedPhotos: UploadedPhoto[];
@@ -165,6 +169,8 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   const [vehicleModelName, setVehicleModelName] = useState<string>('');
   const [plateNumber, setPlateNumber] = useState<string>('');
   const [contactPhone, setContactPhone] = useState<string>('');
+  const [messengerType, setMessengerType] = useState<'' | 'kakao' | 'facebook'>('');
+  const [messengerId, setMessengerId] = useState<string>('');
   const [viewPin, setViewPinState] = useState<string>(() =>
     typeof window !== 'undefined' ? loadSavedViewPin() : DEFAULT_VIEW_PIN
   );
@@ -411,7 +417,9 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       );
       return false;
     }
-    if (isOnsiteLookupCode(phoneNorm)) {
+    const onsite = isOnsiteLookupCode(phoneNorm);
+    const cleanMessengerId = messengerId.trim().slice(0, 80);
+    if (onsite) {
       const place = landmark.trim();
       const plate = plateNumber.trim();
       if (place.length < 4 || plate.length < 4) {
@@ -419,6 +427,14 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
           lang === 'ko'
             ? '현장 대기는 위치 설명과 차량 번호판이 필요합니다'
             : 'On-site wait needs a landmark and plate number'
+        );
+        return false;
+      }
+      if ((messengerType && !cleanMessengerId) || (!messengerType && cleanMessengerId)) {
+        showToast(
+          lang === 'ko'
+            ? '메신저 종류와 아이디를 함께 입력해 주세요'
+            : 'Choose a messenger and enter its ID'
         );
         return false;
       }
@@ -461,8 +477,18 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
           vehicleModelName: vehicleModelName || '차종 정보',
           plateNumber: plateNumber || '번호판 미입력',
           contactPhone: contactPhone || '',
-          notes: isOnsiteLookupCode(phoneNorm)
-            ? `현장 대기. 전화 없이 위치와 번호판으로 찾아주세요. ${issueNotes}`.trim()
+          contactChannel: onsite ? 'onsite' : '',
+          messengerType: onsite && messengerType && cleanMessengerId ? messengerType : '',
+          messengerId: onsite && messengerType && cleanMessengerId ? cleanMessengerId : '',
+          notes: onsite
+            ? [
+                '현장 대기. 전화 없이 위치와 번호판으로 찾아주세요.',
+                messengerType === 'kakao' && cleanMessengerId ? `카카오톡: ${cleanMessengerId}` : '',
+                messengerType === 'facebook' && cleanMessengerId ? `페이스북 메신저: ${cleanMessengerId}` : '',
+                issueNotes,
+              ]
+                .filter(Boolean)
+                .join(' ')
             : issueNotes,
           photos: [],
           paymentMethod,
@@ -804,6 +830,10 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         setPlateNumber,
         contactPhone,
         setContactPhone,
+        messengerType,
+        setMessengerType,
+        messengerId,
+        setMessengerId,
         issueNotes,
         setIssueNotes,
         uploadedPhotos,

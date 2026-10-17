@@ -33,6 +33,8 @@ export const RequestConfirmScreen: React.FC = () => {
     vehicleModelName,
     plateNumber,
     contactPhone,
+    messengerType,
+    messengerId,
     paymentMethod,
     setPaymentMethod,
     submitDispatchRequest,
@@ -208,6 +210,11 @@ export const RequestConfirmScreen: React.FC = () => {
                     : `On-site wait · ${contactPhone}`
                   : `📞 ${contactPhone || (lang === 'ko' ? '연락처 미입력' : 'Phone not entered')}`}
               </p>
+              {isOnsiteLookupCode(contactPhone) && messengerId.trim() && (
+                <p className="text-[11px] text-[#FFC400] mt-0.5 truncate">
+                  {messengerType === 'facebook' ? 'Facebook' : 'KakaoTalk'} · {messengerId.trim()}
+                </p>
+              )}
             </div>
           </div>
           <button

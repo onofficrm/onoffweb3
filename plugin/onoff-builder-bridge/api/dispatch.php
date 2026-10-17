@@ -223,10 +223,26 @@ if ($action === 'save' || $action === 'save_with_photos') {
             cebu24_api_json(false, array('error' => 'onsite_details_required'), 400);
         }
         $item['contactChannel'] = 'onsite';
+        $messenger_type = isset($item['messengerType']) ? (string) $item['messengerType'] : '';
+        $messenger_id = isset($item['messengerId']) ? trim((string) $item['messengerId']) : '';
+        $messenger_id = preg_replace('/[\x00-\x1F\x7F]/', '', $messenger_id);
+        if (function_exists('mb_substr')) {
+            $messenger_id = mb_substr($messenger_id, 0, 80);
+        } else {
+            $messenger_id = substr($messenger_id, 0, 80);
+        }
+        if (($messenger_type === 'kakao' || $messenger_type === 'facebook') && $messenger_id !== '') {
+            $item['messengerType'] = $messenger_type;
+            $item['messengerId'] = $messenger_id;
+        } else {
+            unset($item['messengerType'], $item['messengerId']);
+        }
         $note = isset($item['notes']) ? (string) $item['notes'] : '';
         if (strpos($note, '현장 대기') === false) {
             $item['notes'] = trim('현장 대기. 전화 없이 위치와 번호판으로 찾아주세요. ' . $note);
         }
+    } else {
+        unset($item['messengerType'], $item['messengerId'], $item['contactChannel']);
     }
     $item['contactPhone'] = $phone;
     $item['customerPin'] = $pin;

@@ -39,6 +39,10 @@ export const RequestInformationScreen: React.FC = () => {
     setPlateNumber,
     contactPhone,
     setContactPhone,
+    messengerType,
+    setMessengerType,
+    messengerId,
+    setMessengerId,
     viewPin,
     setViewPin,
     locationAddress,
@@ -428,6 +432,49 @@ export const RequestInformationScreen: React.FC = () => {
                 onChange={(e) => setPlateNumber(e.target.value)}
                 placeholder="예: GAF 3982"
                 className="w-full bg-[#111111] border border-[#3a3a3c] rounded-xl px-3 py-2 text-xs text-white uppercase placeholder:text-[#666] focus:border-[#FFC400] outline-none"
+              />
+            </div>
+            <div>
+              <label className="text-[11px] font-semibold text-[#A7A7A7] mb-1 block">
+                {lang === 'ko' ? '메신저 (선택)' : 'Messenger (optional)'}
+              </label>
+              <div className="grid grid-cols-2 gap-1.5">
+                {(
+                  [
+                    ['kakao', '카카오톡'],
+                    ['facebook', lang === 'ko' ? '페이스북' : 'Facebook'],
+                  ] as const
+                ).map(([id, label]) => (
+                  <button
+                    key={id}
+                    type="button"
+                    onClick={() => setMessengerType(messengerType === id ? '' : id)}
+                    className={`min-h-[36px] rounded-xl border text-[11px] font-black ${
+                      messengerType === id
+                        ? 'bg-[#FFC400] text-black border-[#FFC400]'
+                        : 'bg-[#111111] text-[#D1D5DB] border-[#3a3a3c]'
+                    }`}
+                  >
+                    {label}
+                  </button>
+                ))}
+              </div>
+              <input
+                id="messenger-id-input"
+                type="text"
+                value={messengerId}
+                maxLength={80}
+                onChange={(e) => setMessengerId(e.target.value)}
+                placeholder={
+                  messengerType === 'facebook'
+                    ? lang === 'ko'
+                      ? '페이스북 사용자명'
+                      : 'Facebook username'
+                    : lang === 'ko'
+                      ? '카카오톡 아이디'
+                      : 'KakaoTalk ID'
+                }
+                className="mt-2 w-full bg-[#111111] border border-[#3a3a3c] rounded-xl px-3 py-2 text-xs text-white placeholder:text-[#666] focus:border-[#FFC400] outline-none"
               />
             </div>
           </div>
