@@ -401,7 +401,7 @@ export const AdminDashboardScreen: React.FC = () => {
                     </p>
                   </div>
                 )}
-                <AdminPhotoGallery photoIds={item.photos || []} />
+                <AdminPhotoGallery photoIds={item.photos || []} lazy={item.adminCallStatus === 'completed'} />
               </div>
 
               {/* Status Update Quick Buttons */}

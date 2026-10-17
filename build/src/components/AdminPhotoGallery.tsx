@@ -4,18 +4,22 @@ import { useApp } from '../context/AppContext';
 
 interface AdminPhotoGalleryProps {
   photoIds: string[];
+  lazy?: boolean;
 }
 
-export const AdminPhotoGallery: React.FC<AdminPhotoGalleryProps> = ({ photoIds }) => {
+export const AdminPhotoGallery: React.FC<AdminPhotoGalleryProps> = ({ photoIds, lazy = false }) => {
   const { lang, loadAdminPhoto } = useApp();
   const [urls, setUrls] = useState<string[]>([]);
   const [loading, setLoading] = useState(false);
+  const [opened, setOpened] = useState(false);
   const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
   const [visibleIndex, setVisibleIndex] = useState(0);
   const scrollerRef = useRef<HTMLDivElement>(null);
   const photoKey = photoIds.join(',');
+  const shouldLoad = !lazy || opened;
 
   useEffect(() => {
+    if (!shouldLoad) return;
     let cancelled = false;
     setLoading(true);
     Promise.all(photoIds.map((id) => loadAdminPhoto(id))).then((loaded) => {
@@ -30,7 +34,7 @@ export const AdminPhotoGallery: React.FC<AdminPhotoGalleryProps> = ({ photoIds }
     return () => {
       cancelled = true;
     };
-  }, [photoKey]);
+  }, [photoKey, shouldLoad]);
 
   useEffect(
     () => () => {
@@ -69,7 +73,15 @@ export const AdminPhotoGallery: React.FC<AdminPhotoGalleryProps> = ({ photoIds }
       </p>
 
       <div className="mt-2">
-          {loading ? (
+          {lazy && !opened ? (
+            <button
+              type="button"
+              onClick={() => setOpened(true)}
+              className="w-full rounded-xl border border-[#3A3A3C] bg-[#1a1a1c] px-3 py-2.5 text-xs font-bold text-white"
+            >
+              {lang === 'ko' ? '사진보기' : 'View photos'}
+            </button>
+          ) : loading ? (
             <p className="text-xs text-[#A7A7A7]">{lang === 'ko' ? '사진 불러오는 중…' : 'Loading photos…'}</p>
           ) : urls.length === 0 ? (
             <p className="text-xs text-[#E57373]">{lang === 'ko' ? '사진을 불러오지 못했습니다.' : 'Could not load photos.'}</p>
