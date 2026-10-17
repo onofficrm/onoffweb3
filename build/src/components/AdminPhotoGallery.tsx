@@ -8,7 +8,6 @@ interface AdminPhotoGalleryProps {
 
 export const AdminPhotoGallery: React.FC<AdminPhotoGalleryProps> = ({ photoIds }) => {
   const { lang, loadAdminPhoto } = useApp();
-  const [expanded, setExpanded] = useState(false);
   const [urls, setUrls] = useState<string[]>([]);
   const [loading, setLoading] = useState(false);
   const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
@@ -17,7 +16,6 @@ export const AdminPhotoGallery: React.FC<AdminPhotoGalleryProps> = ({ photoIds }
   const photoKey = photoIds.join(',');
 
   useEffect(() => {
-    if (!expanded) return;
     let cancelled = false;
     setLoading(true);
     Promise.all(photoIds.map((id) => loadAdminPhoto(id))).then((loaded) => {
@@ -32,7 +30,7 @@ export const AdminPhotoGallery: React.FC<AdminPhotoGalleryProps> = ({ photoIds }
     return () => {
       cancelled = true;
     };
-  }, [expanded, photoKey]);
+  }, [photoKey]);
 
   useEffect(
     () => () => {
@@ -65,17 +63,12 @@ export const AdminPhotoGallery: React.FC<AdminPhotoGalleryProps> = ({ photoIds }
 
   return (
     <div className="pt-2 border-t border-[#222224]">
-      <button
-        type="button"
-        onClick={() => setExpanded((value) => !value)}
-        className="flex items-center gap-1.5 text-xs font-bold text-[#FFC400]"
-      >
+      <p className="flex items-center gap-1.5 text-xs font-bold text-[#FFC400]">
         <Image className="w-4 h-4" />
-        {lang === 'ko' ? `접수 사진 ${photoIds.length}장 ${expanded ? '닫기' : '보기'}` : `${photoIds.length} photos`}
-      </button>
+        {lang === 'ko' ? `접수 사진 ${photoIds.length}장` : `${photoIds.length} photos`}
+      </p>
 
-      {expanded && (
-        <div className="mt-2">
+      <div className="mt-2">
           {loading ? (
             <p className="text-xs text-[#A7A7A7]">{lang === 'ko' ? '사진 불러오는 중…' : 'Loading photos…'}</p>
           ) : urls.length === 0 ? (
@@ -97,8 +90,7 @@ export const AdminPhotoGallery: React.FC<AdminPhotoGalleryProps> = ({ photoIds }
               ))}
             </div>
           )}
-        </div>
-      )}
+      </div>
 
       {selectedIndex != null && urls.length > 0 && (
         <div className="fixed inset-0 z-[80] bg-black" role="dialog" aria-modal="true">
