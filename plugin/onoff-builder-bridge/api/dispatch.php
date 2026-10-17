@@ -188,7 +188,7 @@ if ($action === 'list') {
     cebu24_api_json(true, array('items' => $items));
 }
 
-if (strlen($phone) < 10 || strlen($phone) > 13) {
+if (!cebu24_phone_is_callable($phone) && !cebu24_phone_is_onsite_code($phone)) {
     cebu24_api_json(false, array('error' => 'invalid_phone'), 400);
 }
 if (strlen($pin) !== 4) {
@@ -214,6 +214,19 @@ if ($action === 'save' || $action === 'save_with_photos') {
     $item = is_array($raw_item) ? cebu24_sanitize_dispatch_item($raw_item) : null;
     if (!$item || empty($item['id'])) {
         cebu24_api_json(false, array('error' => 'invalid_item'), 400);
+    }
+    if (cebu24_phone_is_onsite_code($phone)) {
+        $landmark = isset($item['landmark']) ? trim((string) $item['landmark']) : '';
+        $plate = isset($item['plateNumber']) ? trim((string) $item['plateNumber']) : '';
+        $landmark_len = function_exists('mb_strlen') ? mb_strlen($landmark) : strlen($landmark);
+        if ($landmark_len < 4 || $plate === '' || $plate === '번호판 미입력') {
+            cebu24_api_json(false, array('error' => 'onsite_details_required'), 400);
+        }
+        $item['contactChannel'] = 'onsite';
+        $note = isset($item['notes']) ? (string) $item['notes'] : '';
+        if (strpos($note, '현장 대기') === false) {
+            $item['notes'] = trim('현장 대기. 전화 없이 위치와 번호판으로 찾아주세요. ' . $note);
+        }
     }
     $item['contactPhone'] = $phone;
     $item['customerPin'] = $pin;

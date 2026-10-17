@@ -31,6 +31,12 @@ if (!function_exists('cebu24_normalize_phone')) {
         if ($digits === null) {
             return '';
         }
+        // KR: +82 10XXXXXXXX or 82 010XXXXXXXX → 010XXXXXXXX
+        if (strlen($digits) === 12 && strpos($digits, '82') === 0) {
+            $digits = '0' . substr($digits, 2);
+        } elseif (strlen($digits) === 13 && strpos($digits, '820') === 0) {
+            $digits = substr($digits, 2);
+        }
         // PH: 09XXXXXXXXX or 639XXXXXXXXX → 09XXXXXXXXX
         if (strlen($digits) === 12 && strpos($digits, '63') === 0) {
             $digits = '0' . substr($digits, 2);
@@ -38,7 +44,24 @@ if (!function_exists('cebu24_normalize_phone')) {
         if (strlen($digits) === 10 && $digits[0] === '9') {
             $digits = '0' . $digits;
         }
+        if (strlen($digits) === 10 && strpos($digits, '10') === 0) {
+            $digits = '0' . $digits;
+        }
         return $digits;
+    }
+}
+
+if (!function_exists('cebu24_phone_is_callable')) {
+    function cebu24_phone_is_callable($phone)
+    {
+        return (bool) preg_match('/^(?:09\d{9}|010\d{8})$/', (string) $phone);
+    }
+}
+
+if (!function_exists('cebu24_phone_is_onsite_code')) {
+    function cebu24_phone_is_onsite_code($phone)
+    {
+        return (bool) preg_match('/^900\d{8}$/', (string) $phone);
     }
 }
 
